@@ -1,0 +1,18 @@
+services:
+  singlestore:
+      image: ghcr.io/singlestore-labs/singlestoredb-dev:latest
+      container_name: singlestoredb-dev
+      hostname: singlestoredb-dev
+      ports:
+        - 3306:3306
+        - 8080:8080
+        - 9000:9000
+      volumes:
+        - singlestore_data:/var/lib/singlestore
+      environment:
+        - SINGLESTORE_LICENSE=BDY2MTNlY2QxMDM1OTQ4NGVhNjUxZDc4NWFiNzBjYTFlAAAAAAAAAAAEAAAAAAAAACgwNQIYQJpdvbCqda7BDmwn1LA+ZwZQ7taDX/MZAhkA51na34ZJ4wEbhp33y69faSruUHGPCjTQAA==
+        - ROOT_PASSWORD=root@1909
+
+volumes:
+  singlestore_data:
+    driver: local
