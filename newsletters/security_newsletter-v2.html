@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regional Security Bulletin - September 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .newsletter {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px;
+            margin: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(238, 90, 36, 0.2);
+            position: relative;
+        }
+        
+        .highlight-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .highlight-box h2::before {
+            content: "⚡";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .map-container {
+            margin: 30px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .nigeria-map {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px;
+        }
+        
+        .zone-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .zone-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .zone-header {
+            padding: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .north-east { background: linear-gradient(135deg, #e17055 0%, #d63031 100%); }
+        .north-west { background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%); }
+        .north-central { background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%); }
+        .south-south { background: linear-gradient(135deg, #6c5ce7 0%, #5f3dc4 100%); }
+        .south-east { background: linear-gradient(135deg, #00b894 0%, #00a085 100%); }
+        .south-west { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+        
+        .zone-content {
+            padding: 20px;
+        }
+        
+        .incidents {
+            margin-bottom: 15px;
+        }
+        
+        .incident-tag {
+            display: inline-block;
+            background: #ff7675;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+        
+        .precautions {
+            background: #dff0d8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #5cb85c;
+            margin-top: 15px;
+        }
+        
+        .precautions h4 {
+            color: #3c763d;
+            margin-bottom: 8px;
+        }
+        
+        .precautions ul {
+            margin-left: 20px;
+        }
+        
+        .precautions li {
+            margin-bottom: 5px;
+            color: #3c763d;
+        }
+        
+        .safety-tips {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 30px;
+            margin: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(253, 203, 110, 0.2);
+        }
+        
+        .safety-tips h2 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .safety-tips h2::before {
+            content: "🛡️";
+            margin-right: 10px;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tip-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tip-card h3 {
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .tip-card ul {
+            margin-left: 20px;
+        }
+        
+        .tip-card li {
+            margin-bottom: 5px;
+            color: #636e72;
+        }
+        
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .footer h3 {
+            margin-bottom: 10px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .zones-grid {
+                grid-template-columns: 1fr;
+            }
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="newsletter">
+        <!-- Header -->
+        <div class="header">
+            <h1>Regional Security Bulletin</h1>
+            <div class="subtitle">September 2025 • Nigeria Security Overview</div>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="highlight-box">
+            <h2>Executive Summary</h2>
+            <p>Nigeria's security landscape remains challenging with persistent terrorism, kidnapping, and banditry across all zones, directly impacting SCIDaR operations. Key developments include government arrests of bandit leaders in August disrupting networks, while insurgents maintain territorial control affecting humanitarian access. Critical route disruptions on Damaturu-Maiduguri and major highways pose operational risks to SCIDaR staff and implementation activities.</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Abducted in Zamfara (August)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">32</div>
+                <div class="stat-label">Recent Fatalities</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">125%</div>
+                <div class="stat-label">Surge in Southeast Attacks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3,000</div>
+                <div class="stat-label">Displaced by Bridge Collapse</div>
+            </div>
+        </div>
+
+        <!-- Map Placeholder -->
+        <div class="map-container">
+            <div class="nigeria-map">
+                <div>
+                    <h3>🗺️ Nigeria Security Risk Map</h3>
+                    <p>Interactive map showing risk levels across six geopolitical zones</p>
+                    <small>Visual representation of current threat levels and incident hotspots</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone Snapshots -->
+        <div class="zones-grid">
+            <!-- North East -->
+            <div class="zone-card">
+                <div class="zone-header north-east">
+                    🔴 NORTH EAST - HIGH RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Terrorism</div>
+                        <div class="incident-tag">Mass Kidnapping</div>
+                        <div class="incident-tag">Drone Attacks</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> 5-week ISWAP resurgence killed 300+, including 52 farmers in Borno attacks.</p>
+                    <p><strong>Impact:</strong> Road disruptions on Maiduguri-Damaturu route, operational risks for NGOs.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>Limit non-essential travel to Borno/Yobe</li>
+                            <li>Use daylight hours with verified escorts</li>
+                            <li>Avoid rural areas and IDP camps</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- North West -->
+            <div class="zone-card">
+                <div class="zone-header north-west">
+                    🔴 NORTH WEST - HIGH RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Banditry</div>
+                        <div class="incident-tag">Mass Abduction</div>
+                        <div class="incident-tag">Highway Attacks</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> 50+ abducted in Zamfara; Ansaru leaders arrested disrupting networks.</p>
+                    <p><strong>Impact:</strong> Major highway disruptions, reduced trade, ~30,000 bandits in 100 gangs.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>No night travel on highways</li>
+                            <li>Armed escorts and GPS tracking</li>
+                            <li>Regular abduction response drills</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- North Central -->
+            <div class="zone-card">
+                <div class="zone-header north-central">
+                    🟡 NORTH CENTRAL - MEDIUM RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Communal Violence</div>
+                        <div class="incident-tag">Flooding</div>
+                        <div class="incident-tag">FCT Kidnapping</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> 6 killed in Plateau attacks; dam collapse displaced 3,000 in Niger.</p>
+                    <p><strong>Impact:</strong> Infrastructure damage from floods, FCT highway risks.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>Monitor weather and road alerts</li>
+                            <li>Secure transport with communication devices</li>
+                            <li>Emergency kits for displacement risks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- South South -->
+            <div class="zone-card">
+                <div class="zone-header south-south">
+                    🟡 SOUTH SOUTH - MEDIUM RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Militancy</div>
+                        <div class="incident-tag">Oil Infrastructure</div>
+                        <div class="incident-tag">Piracy</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> Rivers state emergency declared; oil worker kidnappings continue.</p>
+                    <p><strong>Impact:</strong> Energy operations disrupted, coastal travel risks.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>Security escorts for coastal travel</li>
+                            <li>Enhanced cybersecurity measures</li>
+                            <li>Coordinate with local authorities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- South East -->
+            <div class="zone-card">
+                <div class="zone-header south-east">
+                    🟡 SOUTH EAST - MEDIUM RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Secessionist Violence</div>
+                        <div class="incident-tag">Unknown Gunmen</div>
+                        <div class="incident-tag">IPOB Attacks</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> 125% surge in Biafran attacks; 11 killed in Abia by gunmen.</p>
+                    <p><strong>Impact:</strong> Business disruptions in Onitsha, Owerri, Enugu urban centers.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>Avoid IPOB hotspots during protests</li>
+                            <li>Use varied routes and secure vehicles</li>
+                            <li>De-escalation training for encounters</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- South West -->
+            <div class="zone-card">
+                <div class="zone-header south-west">
+                    🟢 SOUTH WEST - LOWER RISK
+                </div>
+                <div class="zone-content">
+                    <div class="incidents">
+                        <div class="incident-tag">Expanding Banditry</div>
+                        <div class="incident-tag">Cybercrime</div>
+                        <div class="incident-tag">Rural Violence</div>
+                    </div>
+                    <p><strong>Key Incident:</strong> 33 killed by herdsmen-bandits in Ondo/Oyo; Lagos cybercrime surge.</p>
+                    <p><strong>Impact:</strong> Digital operations affected, rural violence expansion.</p>
+                    <div class="precautions">
+                        <h4>🚨 Precautions</h4>
+                        <ul>
+                            <li>Implement cyber hygiene protocols</li>
+                            <li>Avoid rural night travel</li>
+                            <li>Monitor public events for risks</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Safety Tips -->
+        <div class="safety-tips">
+            <h2>Essential SCIDaR Staff Safety Guidelines</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3>🚗 Travel & Mobility</h3>
+                    <ul>
+                        <li>Use verified transport, all travels within daylight hours</li>
+                        <li>Avoid commencing trips after 12 PM for 4+ hour drives</li>
+                        <li>Share location with trusted SCIDaR contacts</li>
+                        <li>Vary routes to avoid profiling when traveling to security-compromised locations</li>
+                        <li>Share itinerary and seek security clearance from SCIDaR security team</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>🏢 SCIDaR Facility Security</h3>
+                    <ul>
+                        <li>Keep low profile at EOC and State offices - avoid loud behavior</li>
+                        <li>Report faulty CCTV to facilities unit immediately</li>
+                        <li>Uphold personal security while in SCIDaR facilities</li>
+                        <li>Report security incidents via SCIDaR secure channels</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>💻 Health & Cyber Safety</h3>
+                    <ul>
+                        <li>Get recommended vaccinations (yellow fever, etc.) for unfamiliar locations</li>
+                        <li>Use only secured networks - avoid public internet for SCIDaR devices</li>
+                        <li>Buy food from registered vendors only</li>
+                        <li>Avoid dairy products, eat only what you know and trust</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>📱 SCIDaR Monitoring Sources</h3>
+                    <ul>
+                        <li>@PoliceNG - Official police updates</li>
+                        <li>@HQNigerianArmy - Military operations</li>
+                        <li>ONSA and DSS official reports</li>
+                        <li>SCIDaR Local Community Partners</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>SCIDaR Emergency Contacts & Reporting</h3>
+            <p>Report all security incidents immediately through SCIDaR official channels</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>📞</span>
+                    <span>SCIDaR Emergency: XXX-XXXX</span>
+                </div>
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>security@scidar.org</span>
+                </div>
+                <div class="contact-item">
+                    <span>📱</span>
+                    <span>SCIDaR Security WhatsApp</span>
+                </div>
+            </div>
+            <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9em;">
+                This bulletin is classified for SCIDaR internal distribution only • Next update: October 6, 2025
+            </p>
+        </div>
+    </div>
+</body>
+</html>
