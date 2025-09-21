@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <title>Nigeria Interactive Map</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: sans-serif; }
+    svg { border: 1px solid #ccc; }
+    .state {
+      stroke: #333;
+      stroke-width: 0.5;
+      cursor: pointer;
+    }
+    .tooltip {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 5px;
+      font-size: 12px;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .zoom-buttons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .zoom-buttons button {
+      margin: 2px;
+      padding: 5px 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .zone-label {
+      font-size: 16px;
+      font-weight: bold;
+      text-anchor: middle;
+      fill: rgba(0,0,0,0.6); /* semi-transparent text */
+      pointer-events: none;   /* so zoom/pan still works */
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="tooltip" id="tooltip"></div>
+  <div class="zoom-buttons">
+    <button id="zoom_in">+</button>
+    <button id="zoom_out">−</button>
+    <button id="reset">⟳</button>
+  </div>
+
+  <script>
+    const width = 800, height = 600;
+
+    const svg = d3.select("#map")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const g = svg.append("g");
+
+    const projection = d3.geoMercator()
+      .center([10, 9])   // Nigeria center
+      .scale(2000)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+
+    const tooltip = d3.select("#tooltip");
+
+    // Define geopolitical zones with colors
+    const zones = {
+      "North Central": ["Benue", "Kogi", "Kwara", "Nassarawa", "Niger", "Plateau", "Federal Capital Territory"],
+      "North East": ["Adamawa", "Bauchi", "Borno", "Gombe", "Taraba", "Yobe"],
+      "North West": ["Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Sokoto", "Zamfara"],
+      "South East": ["Abia", "Anambra", "Ebonyi", "Enugu", "Imo"],
+      "South South": ["Akwa Ibom", "Bayelsa", "Cross River", "Delta", "Edo", "Rivers"],
+      "South West": ["Ekiti", "Lagos", "Ogun", "Ondo", "Osun", "Oyo"]
+    };
+
+    const zoneColors = {
+      "North Central": "#f4a261",
+      "North East": "#e76f51",
+      "North West": "#e76f51",
+      "South East": "#f4a261",
+      "South South": "#f4a261",
+      "South West": "#8ab17d"
+    };
+
+    function getZone(state) {
+      for (const [zone, states] of Object.entries(zones)) {
+        if (states.includes(state)) return zone;
+      }
+      return null;
+    }
+
+    d3.json("sample.geojson").then(data => {
+      // Draw states
+      g.selectAll("path")
+        .data(data.features)
+        .enter().append("path")
+        .attr("class", "state")
+        .attr("d", path)
+        .attr("fill", d => {
+          const zone = getZone(d.properties.name);
+          return zone ? zoneColors[zone] : "#ccc";
+        })
+        .on("mouseover", (event, d) => {
+          const zone = getZone(d.properties.name);
+          tooltip.style("opacity", 1)
+                 .html("<b>" + d.properties.name + "</b><br/>Zone: " + (zone || "Unknown"))
+                 .style("left", (event.pageX + 10) + "px")
+                 .style("top", (event.pageY - 20) + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.style("opacity", 0);
+        });
+
+      // ---- Add Zone Labels ----
+      for (const [zone, states] of Object.entries(zones)) {
+        const zoneStates = data.features.filter(f => states.includes(f.properties.name));
+        if (zoneStates.length > 0) {
+          // Calculate average centroid of all states in this zone
+          const centroids = zoneStates.map(f => path.centroid(f));
+          const avgX = d3.mean(centroids, d => d[0]);
+          const avgY = d3.mean(centroids, d => d[1]);
+
+          g.append("text")
+            .attr("class", "zone-label")
+            .attr("x", avgX)
+            .attr("y", avgY)
+            .text(zone);
+        }
+      }
+    });
+
+    // Zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+
+    // Zoom buttons
+    d3.select("#zoom_in").on("click", () => svg.transition().call(zoom.scaleBy, 1.5));
+    d3.select("#zoom_out").on("click", () => svg.transition().call(zoom.scaleBy, 0.75));
+    d3.select("#reset").on("click", () => svg.transition().call(zoom.scaleTo, 1));
+  </script>
+</body>
+</html>
