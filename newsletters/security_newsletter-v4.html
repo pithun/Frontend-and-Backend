@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SCIDaR Security Watch — September 2025</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #f4f8fb;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent-1: #1f6feb;
+    --accent-2: #0ea5a4;
+    --danger: #ef4444;
+    --warn: #f59e0b;
+    --safe: #06b6d4;
+    --shadow: 0 10px 30px rgba(12, 20, 40, 0.08);
+    --radius: 12px;
+    --max-width: 1100px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto;
+    background: linear-gradient(180deg,#f7fbff 0%, #f4f8fb 100%);
+    color:#0b1b2b;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+    padding:20px 16px;
+    font-size:14px;
+  }
+
+  .wrap{ max-width:var(--max-width); margin:0 auto; }
+
+  /* Header */
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    background: linear-gradient(90deg,var(--accent-1), #3f3fb4);
+    color:#fff;
+    padding:16px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+  }
+  .brand{
+    width:64px; height:64px; min-width:64px;
+    border-radius:10px;
+    display:grid; place-items:center;
+    font-weight:800; letter-spacing:0.6px;
+    background: rgba(255,255,255,0.09);
+    font-size:16px;
+  }
+  .header-info h1{ margin:0; font-size:18px; }
+  .header-info p{ margin:4px 0 0; font-size:12px; opacity:0.95; }
+  .header-meta{ margin-left:auto; text-align:right; font-size:12px; }
+  .header-meta strong{ display:block; font-weight:700; }
+
+  /* Overview */
+  .overview{ 
+    background:var(--card); 
+    border-radius:12px; 
+    padding:16px; 
+    box-shadow:var(--shadow); 
+    margin-top:16px;
+  }
+  .lead{ font-weight:600; font-size:14px; margin:0 0 12px 0; color:#071033; }
+  .muted{ color:var(--muted); font-size:13px; }
+
+  /* Stats */
+  .stats{ display:flex; gap:10px; flex-wrap:wrap; margin:12px 0; }
+  .stat{
+    flex:1; min-width:120px;
+    background:linear-gradient(180deg,#fff,#fbfdff);
+    border-radius:8px; padding:10px; text-align:center;
+    box-shadow: 0 4px 12px rgba(12,20,40,0.04);
+  }
+  .stat .num{ font-weight:800; font-size:18px; color:#0b1220; }
+  .stat .lbl{ margin-top:4px; font-size:11px; color:var(--muted); line-height:1.2; }
+
+  /* Regions - Main Focus */
+  .regions-section{ margin-top:16px; }
+  .regions-section h2{ margin:0 0 6px 0; font-size:16px; color:var(--accent-1); }
+  .regions-note{ font-size:12px; color:var(--muted); margin-bottom:12px; }
+
+  .regions{ display:grid; gap:10px; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width:950px){ .regions{ grid-template-columns:repeat(2,1fr) } }
+  @media (max-width:650px){ .regions{ grid-template-columns:1fr } }
+
+  .region{
+    background:linear-gradient(180deg,#fff,#fbfdff);
+    border-radius:10px; padding:12px; box-shadow:0 6px 18px rgba(12,20,40,0.04);
+    border-left:4px solid rgba(0,0,0,0.03);
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .region:hover{ transform:translateY(-2px); box-shadow:0 12px 24px rgba(12,20,40,0.08); }
+  .region.hi{ border-left-color:var(--danger); }
+  .region.med{ border-left-color:var(--warn); }
+  .region.low{ border-left-color:var(--safe); }
+
+  .region .title{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .region h3{ margin:0; font-size:13px; font-weight:700; }
+  .tag{ font-weight:600; font-size:10px; padding:3px 6px; border-radius:12px; color:#fff; text-transform:uppercase; }
+  .hi .tag{ background:var(--danger); }
+  .med .tag{ background:var(--warn); }
+  .low .tag{ background:var(--safe); }
+
+  .region p{ margin:0; color:var(--muted); font-size:12px; line-height:1.4; }
+  .region .impact{ font-weight:600; color:#0b1220; margin-bottom:4px; }
+
+  .details{ 
+    margin-top:8px; 
+    padding-top:8px; 
+    border-top:1px solid #e5e7eb; 
+    display:none; 
+    font-size:11px;
+    line-height:1.4;
+  }
+  .region.active .details{ display:block; animation:fadeIn .2s ease both; }
+  .details strong{ color:#0b1220; }
+
+  /* Guidelines - Compact */
+  .guidelines{ 
+    margin-top:16px; 
+    display:grid; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap:12px; 
+  }
+  @media (max-width:800px){ .guidelines{ grid-template-columns:1fr } }
+  
+  .guide-card{ 
+    background:var(--card); 
+    padding:12px; 
+    border-radius:8px; 
+    box-shadow:0 4px 12px rgba(12,20,40,0.04); 
+  }
+  .guide-card h4{ margin:0 0 6px; font-size:13px; color:var(--accent-1); font-weight:600; }
+  .guide-card ul{ margin:6px 0 0 14px; color:var(--muted); font-size:12px; }
+  .guide-card li{ margin:3px 0; line-height:1.3; }
+
+  /* Footer */
+  footer{
+    margin-top:16px; 
+    padding:12px; 
+    border-radius:8px; 
+    background:linear-gradient(90deg,#0b1220,#0f172a);
+    color:#fff; 
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    gap:12px;
+    font-size:12px;
+  }
+  footer .right{ font-size:11px; color:rgba(255,255,255,0.8); }
+
+  @keyframes fadeIn { from{ opacity:0; transform: translateY(4px)} to{ opacity:1; transform:none } }
+  
+  @media (max-width:600px){
+    header{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .brand{ width:48px; height:48px; font-size:14px; }
+    footer{ flex-direction:column; align-items:flex-start; gap:6px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">SCIDaR</div>
+      <div class="header-info">
+        <h1>SCIDaR Security Watch</h1>
+        <p>September 2025 — Security snapshot for SCIDaR operations across Nigeria</p>
+      </div>
+      <div class="header-meta">
+        <strong>September 2025</strong>
+        <div>Security Desk briefing</div>
+      </div>
+    </header>
+
+    <div class="overview">
+      <p class="lead">Situation Overview</p>
+      <p class="muted">
+        Nigeria's security environment remains challenging with persistent terrorism, mass abductions, banditry and highway attacks directly affecting SCIDaR operations. Recent government arrests of bandit leaders in August disrupted some networks, but insurgents maintain territorial control in several LGAs, restricting humanitarian access. Critical route disruptions (Damaturu–Maiduguri) increase operational risks for staff and slow project implementation.
+      </p>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="num" data-target="50">0+</div>
+          <div class="lbl">Zamfara Abductions (August)</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-target="125" data-pct="true">0%</div>
+          <div class="lbl">Southeast Attack Surge</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-target="32">0+</div>
+          <div class="lbl">Recent Fatalities</div>
+        </div>
+        <div class="stat">
+          <div class="num" data-target="3000">0</div>
+          <div class="lbl">Bridge Collapse Displaced</div>
+        </div>
+      </div>
+    </div>
+
+    <section class="regions-section">
+      <h2>Regional Security Zones</h2>
+      <div class="regions-note">Threats, impacts and recommended precautions — click a zone to expand details</div>
+
+      <div class="regions">
+        <div class="region hi" data-region="ne">
+          <div class="title">
+            <h3>NORTH EAST</h3>
+            <div class="tag">HIGH</div>
+          </div>
+          <p class="impact">Route disruption, NGO targeting, humanitarian access limited</p>
+          <p>Damaturu–Maiduguri route disrupted. Operational risks elevated for humanitarian workers in Borno/Yobe LGAs.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> Essential travel only to affected LGAs (Gwoza, Bama, Chibok). Daylight movement mandatory. Obtain security clearance and travel protocols from security unit before departure. Avoid late night commuting.</p>
+          </div>
+        </div>
+
+        <div class="region hi" data-region="nw">
+          <div class="title">
+            <h3>NORTH WEST</h3>
+            <div class="tag">HIGH</div>
+          </div>
+          <p class="impact">Mass abduction, highway attacks, territorial control</p>
+          <p>50+ abducted in Zamfara (August). Bandit control in Malumfashi. Declined farming/commerce in Katsina, Sokoto, Zamfara.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> No night travel on highways. Security clearance required for high-risk areas. Share GPS location with trusted contacts. Request escort services. Vary routes to avoid profiling.</p>
+          </div>
+        </div>
+
+        <div class="region med" data-region="nc">
+          <div class="title">
+            <h3>NORTH CENTRAL</h3>
+            <div class="tag">MEDIUM</div>
+          </div>
+          <p class="impact">Village attacks, infrastructure damage, personnel ambush</p>
+          <p>6 killed in Plateau attacks. Civil defense ambushed in Kogi. Bridge collapse in Mokwa displaced 3,000.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> High situational awareness required. Avoid Abuja-Lokoja axis risks. Secure route clearance before deployment. "Know before you go" approach mandatory.</p>
+          </div>
+        </div>
+
+        <div class="region med" data-region="ss">
+          <div class="title">
+            <h3>SOUTH SOUTH</h3>
+            <div class="tag">MEDIUM</div>
+          </div>
+          <p class="impact">Foreign worker targeting, drug trafficking, cyber attacks</p>
+          <p>Rivers State emergency. Foreign worker kidnappings increasing. Oil bunkering and cyber threats rising.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> Reduce non-essential coastal travel. Security screening required. Enhanced cybersecurity measures. Check situational reports before deployment.</p>
+          </div>
+        </div>
+
+        <div class="region med" data-region="se">
+          <div class="title">
+            <h3>SOUTH EAST</h3>
+            <div class="tag">MEDIUM</div>
+          </div>
+          <p class="impact">Sit-at-home orders, aid worker targeting, IPOB attacks</p>
+          <p>125% surge in attacks. 11+ killed including aid workers. Monday disruptions affecting operations.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> Avoid Monday travel to Southeast. Avoid IPOB hotspots during protests. Use security-cleared vehicles only. Consider armored escorts for high-risk movements.</p>
+          </div>
+        </div>
+
+        <div class="region low" data-region="sw">
+          <div class="title">
+            <h3>SOUTH WEST</h3>
+            <div class="tag">LOWER</div>
+          </div>
+          <p class="impact">Cybercrime surge, herdsmen attacks, cult activities</p>
+          <p>33+ killed in Ondo/Oyo herdsmen attacks. Lagos cybercrime spike. Cult activity rising in Ogun.</p>
+          <div class="details">
+            <p><strong>SCIDaR Precautions:</strong> Increase cyber hygiene training. Avoid rural night travel. Security clearance for rural deployments. Enhanced IT security protocols.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="guidelines">
+      <div class="guide-card">
+        <h4>Travel Protocols</h4>
+        <ul>
+          <li>Essential travel only, daylight hours preferred</li>
+          <li>No trips after 12 PM for journeys >4 hours</li>
+          <li>Security clearance required for high-risk LGAs</li>
+          <li>Share GPS location and itineraries</li>
+          <li>Use varied routes to avoid profiling</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>Facilities & Operations</h4>
+        <ul>
+          <li>Low profile at EOC and state offices</li>
+          <li>Report faulty CCTV immediately</li>
+          <li>Use SCIDaR secure channels for incidents</li>
+          <li>Emergency protocols and drills current</li>
+          <li>Verified local partners for high-risk areas</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>Health & Cyber Security</h4>
+        <ul>
+          <li>Updated vaccinations for deployment areas</li>
+          <li>Secured networks only, avoid public WiFi</li>
+          <li>Food from registered vendors only</li>
+          <li>Enhanced cybersecurity training mandatory</li>
+          <li>Monitor: @PoliceNG, @HQNigerianArmy, ONSA/DSS</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <div class="left">
+        <strong>SCIDaR Security Desk</strong><br>
+        📧 security@scidar.org • 📞 +234-XXX-XXXX
+      </div>
+      <div class="right">
+        Internal circulation — September 2025<br>
+        Next update: October 6, 2025
+      </div>
+    </footer>
+  </div>
+
+<script>
+  // Counter animations
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = Number(el.getAttribute('data-target') || 0);
+        const isPct = el.hasAttribute('data-pct');
+        let current = 0;
+        const steps = Math.max(20, Math.floor(target / 6));
+        
+        const interval = setInterval(() => {
+          current += Math.max(1, Math.floor(target / steps));
+          if(current >= target){
+            el.textContent = isPct ? `${target}%` : (target >= 1000 ? target.toLocaleString() : (target + (el.textContent.includes('+') ? '+' : '')));
+            clearInterval(interval);
+          } else {
+            el.textContent = isPct ? `${Math.round(current)}%` : Math.round(current);
+          }
+        }, 15);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.num').forEach(n => counterObserver.observe(n));
+
+  // Region toggles
+  document.querySelectorAll('.region').forEach(region => {
+    region.addEventListener('click', (e) => {
+      if (['A','BUTTON'].includes(e.target.tagName)) return;
+      
+      // Close others
+      document.querySelectorAll('.region').forEach(r => {
+        if(r !== region) r.classList.remove('active');
+      });
+      
+      // Toggle current
+      region.classList.toggle('active');
+    });
+  });
+
+  // Open first region by default
+  if(document.querySelector('.region')) {
+    document.querySelector('.region').classList.add('active');
+  }
+</script>
+</body>
+</html>
