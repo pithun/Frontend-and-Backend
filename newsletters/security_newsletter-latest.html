@@ -6,30 +6,41 @@
 <title>SCIDaR Security Watch — September 2025</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-      /* Your existing styles */
-      
-      /* ADD THESE NEW/UPDATED STYLES: */
+      /* Map container & controls (responsive) - default smaller max width */
       #map {
-        width: 600px;
-        max-width: 800px;
-        height: 400px;
+        width: 100%;
+        max-width: 640px;           /* DEFAULT map is smaller now */
+        aspect-ratio: 4 / 3;
         border: 2px solid #333;
         border-radius: 8px;
         position: relative;
         overflow: hidden;
         background: #f5f5f5;
-        margin: 20px auto;  /* Add this line to center horizontally */
-        display: block;     /* Add this line */
+        margin: 20px auto;
+        display: block;
       }
-
-
-      #map svg {
-        border: none;
+      #map svg { width: 100%; height: 100%; display:block; }
+      .zoom-buttons {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 100;
+      }
+      .zoom-buttons button {
+        padding: 8px 12px;
+        font-size: 16px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background: white;
       }
 
       .tooltip {
         position: absolute;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0,0,0,0.9);
         color: white;
         border: 1px solid #333;
         border-radius: 4px;
@@ -37,29 +48,9 @@
         font-size: 12px;
         pointer-events: none;
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity .18s;
         z-index: 1000;
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      }
-
-      .zoom-buttons {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;  /* Add this line for spacing between buttons */
-        z-index: 100;
-      }
-
-      .zoom-buttons button {
-        margin: 0;  /* Change from margin: 2px to 0 */
-        padding: 8px 12px;  /* Increase padding for bigger buttons */
-        font-size: 16px;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background: white;
       }
 
       .zone-label {
@@ -70,9 +61,39 @@
         pointer-events: none;
       }
 
+      /* stronger selected state visuals */
+      .state.selected { stroke: #0b1220; stroke-width: 2.5; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35)); opacity:1; }
+      /* stronger card highlight */
+      .region.highlight {
+        box-shadow: 0 0 28px rgba(28, 189, 114, 0.9);
+        transform: translateY(-4px) scale(1.02);
+        border-left-color: #0b8a4a !important;
+        background: linear-gradient(180deg,#fffefb,#f7fff5);
+        transition: all 0.28s ease;
+      }
 
-      /* Keep your other existing zoom-buttons button styles */
+      /* small panel inside map that shows the region details on click */
+      .map-panel {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        width: 280px;
+        max-width: 46%;
+        background: white;
+        border-radius: 8px;
+        padding: 10px 12px;
+        box-shadow: 0 6px 24px rgba(12,20,40,0.18);
+        z-index: 1100;
+        font-size: 13px;
+        color: #071033;
+        display: none; /* show when populated */
+      }
+      .map-panel h4 { margin:0 0 6px; font-size:14px; color:#0b1220; }
+      .map-panel .close { position:absolute; top:8px; right:8px; background:#eee; border-radius:6px; padding:4px 6px; cursor:pointer; font-weight:600; }
+
+  /* Keep your other existing zoom-buttons button styles and entire styling below unchanged */
   </style>
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
@@ -221,7 +242,7 @@
     margin-top:16px; 
     padding:12px; 
     border-radius:8px; 
-    background:linear-gradient(90deg,#0b1220,#0f172a);
+    background:linear-gradient(90deg,#a2c77f,#096e37);
     color:#fff; 
     display:flex; 
     justify-content:space-between; 
@@ -237,8 +258,14 @@
     header{ flex-direction:column; align-items:flex-start; gap:10px; }
     .brand{ width:48px; height:48px; font-size:14px; }
     footer{ flex-direction:column; align-items:flex-start; gap:6px; }
+    .zoom-buttons { gap:6px; }
+    .zoom-buttons button { padding:8px; font-size:14px; }
+    /* put sidebar toggle & sidebar to bottom on phones */
+    .sidebar { top: auto; bottom: 0; right: -100%; width: 100%; border-radius: 12px 12px 0 0; }
+    .sidebar.open { right: 0; }
+    .sidebar-toggle { top: auto; bottom: 84px; left: 10px; }
   }
-  /* Sidebar Styles */
+
   /* Sidebar Styles */
   .sidebar {
     position: fixed;
@@ -251,7 +278,7 @@
     border-radius: 12px 0 0 12px;
     box-shadow: -4px 0 12px rgba(0,0,0,0.2);
     font-size: 14px;
-    transition: right 0.3s ease-in-out;
+    transition: right 0.28s ease-in-out;
     z-index: 1000;
   }
 
@@ -280,7 +307,7 @@
     cursor: pointer;
     box-shadow: 2px 0 6px rgba(0,0,0,0.3);
     z-index: 1001;
-    transition: background 0.2s;
+    transition: background 0.18s;
   }
 
   .sidebar-toggle:hover {
@@ -303,6 +330,7 @@
       <div>Security Desk briefing</div>
     </div>
   </header>
+
   <!-- Sidebar Toggle Button -->
   <div class="sidebar-toggle" id="toggleBtn">📅 Next Update</div>
 
@@ -347,6 +375,12 @@
               <button id="zoom_in">+</button>
               <button id="zoom_out">−</button>
               <button id="reset">⟳</button>
+            </div>
+            <!-- Map panel to show region details immediately when clicking the map -->
+            <div class="map-panel" id="mapPanel" aria-hidden="true">
+              <div class="close" id="mapPanelClose">✖</div>
+              <h4 id="mapPanelTitle"></h4>
+              <div id="mapPanelBody"></div>
             </div>
           </div>
         </div>
@@ -468,8 +502,10 @@
     <footer>
       <div class="left">
         <strong>SCIDaR Security Desk</strong><br>
-        📧 peter.aigbe@solinagroup.com • 📞 +234 903 085 7244 | +234 814 565 0190 | +234 809 491 7896
-      </div>
+        📧 <a href="mailto:peter.aigbe@solinagroup.com">peter.aigbe@solinagroup.com</a> • 
+        📞 <a href="tel:+2349030857244">+234 903 085 7244</a> | 
+        <a href="tel:+2348145650190">+234 814 565 0190</a> | 
+        <a href="tel:+2348094917896">+234 809 491 7896</a></div>
       <div class="right">
         Internal circulation — September 2025<br>
         Next update: October 6, 2025
@@ -503,7 +539,7 @@
 
   document.querySelectorAll('.num').forEach(n => counterObserver.observe(n));
 
-  // Region toggles
+  // Region toggles (cards clickable)
   document.querySelectorAll('.region').forEach(region => {
     region.addEventListener('click', (e) => {
       if (['A','BUTTON'].includes(e.target.tagName)) return;
@@ -517,7 +553,6 @@
       region.classList.toggle('active');
     });
   });
-  
 
   // Open first region by default
   if(document.querySelector('.region')) {
@@ -526,20 +561,16 @@
 </script>
 
 <script>
-    const width = 800, height = 600;
+    const WIDTH = 800, HEIGHT = 600;
 
     const svg = d3.select("#map")
       .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("viewBox", `0 0 ${WIDTH} ${HEIGHT}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
 
     const g = svg.append("g");
 
-    const projection = d3.geoMercator()
-      .center([12, 6])     // Adjust longitude slightly
-      .scale(1800)        // Reduce scale to fit better
-      .translate([width / 2, height / 2]);
-
+    const projection = d3.geoMercator().scale(1).translate([0,0]);
     const path = d3.geoPath().projection(projection);
 
     const tooltip = d3.select("#tooltip");
@@ -570,7 +601,19 @@
       return null;
     }
 
+    // map zone name -> data-region code used in cards
+    const zoneCodes = {
+      "North Central":"nc","North East":"ne","North West":"nw",
+      "South East":"se","South South":"ss","South West":"sw"
+    };
+
+    let geoData = null;
+
     d3.json("sample.geojson").then(data => {
+      geoData = data;
+      // fit projection to the viewBox
+      projection.fitSize([WIDTH, HEIGHT], geoData);
+
       // Draw states
       g.selectAll("path")
         .data(data.features)
@@ -581,6 +624,8 @@
           const zone = getZone(d.properties.name);
           return zone ? zoneColors[zone] : "#ccc";
         })
+        .attr("stroke","#333")
+        .attr("stroke-width",0.5)
         .on("mouseover", (event, d) => {
           const zone = getZone(d.properties.name);
           tooltip.style("opacity", 1)
@@ -590,6 +635,48 @@
         })
         .on("mouseout", () => {
           tooltip.style("opacity", 0);
+        })
+        .on("click", (event, d) => {
+          // clear previous selection
+          g.selectAll(".state").classed("selected", false);
+          d3.select(event.currentTarget).classed("selected", true);
+
+          // find zone and corresponding card
+          const zoneName = getZone(d.properties.name);
+          if (!zoneName) return;
+          const code = zoneCodes[zoneName];
+          const card = document.querySelector(`.region[data-region="${code}"]`);
+          if (card) {
+            // scroll and open details and strongly highlight
+            card.scrollIntoView({ behavior:"smooth", block:"center" });
+
+            // remove highlight from others
+            document.querySelectorAll('.region').forEach(r => r.classList.remove('highlight'));
+
+            card.classList.add('highlight');
+            card.classList.add('active'); // auto-open details
+
+            // remove highlight after a visible duration
+            setTimeout(()=>card.classList.remove('highlight'), 1800);
+
+            // populate the little map-panel with the card's details (so user sees precautions instantly)
+            const panel = document.getElementById('mapPanel');
+            const title = document.getElementById('mapPanelTitle');
+            const body = document.getElementById('mapPanelBody');
+
+            // Use card's title and details HTML (keeps your exact text)
+            title.textContent = card.querySelector('h3').textContent;
+            const detailsEl = card.querySelector('.details');
+            const impactEl = card.querySelector('.impact') || card.querySelector('p');
+            // build body: impact + details
+            let html = "";
+            if(impactEl) html += `<p style="margin:0 0 6px 0; font-weight:600;">${impactEl.textContent}</p>`;
+            if(detailsEl) html += `<div>${detailsEl.innerHTML}</div>`;
+            body.innerHTML = html;
+
+            panel.style.display = 'block';
+            panel.setAttribute('aria-hidden','false');
+          }
         });
 
       // ---- Add Zone Labels ----
@@ -608,12 +695,15 @@
             .text(zone);
         }
       }
+    }).catch(err=>{
+      console.error("geojson load error:",err);
+      d3.select("#map").append("div").style("padding","12px").text("Map failed to load.");
     });
 
     // Zoom behavior with constrained bounds
     const zoom = d3.zoom()
       .scaleExtent([0.5, 8])
-      .translateExtent([[-100, -100], [width + 100, height + 100]]) // Constrain panning
+      .translateExtent([[-100, -100], [WIDTH + 100, HEIGHT + 100]]) // Constrain panning
       .on("zoom", (event) => {
         g.attr("transform", event.transform);
       });
@@ -623,9 +713,44 @@
     // Zoom buttons
     d3.select("#zoom_in").on("click", () => svg.transition().call(zoom.scaleBy, 1.5));
     d3.select("#zoom_out").on("click", () => svg.transition().call(zoom.scaleBy, 0.75));
-    d3.select("#reset").on("click", () => svg.transition().call(zoom.scaleTo, 1));
+    d3.select("#reset").on("click", () => svg.transition().call(zoom.transform, d3.zoomIdentity));
+
+    // resize: when window resizes, recompute fit (keeps map nicely scaled)
+    let resizeDeb;
+    window.addEventListener('resize', ()=> {
+      if(!geoData) return;
+      clearTimeout(resizeDeb);
+      resizeDeb = setTimeout(()=>{
+        projection.fitSize([WIDTH, HEIGHT], geoData);
+        // redraw paths and labels to use new projection
+        d3.selectAll('path.state').attr('d', path);
+        d3.selectAll('text.zone-label').remove();
+        for (const [zone, states] of Object.entries(zones)) {
+          const zoneStates = geoData.features.filter(f => states.includes(f.properties.name));
+          if (zoneStates.length > 0) {
+            const centroids = zoneStates.map(f => path.centroid(f));
+            const avgX = d3.mean(centroids, d => d[0]);
+            const avgY = d3.mean(centroids, d => d[1]);
+            g.append("text")
+              .attr("class", "zone-label")
+              .attr("x", avgX)
+              .attr("y", avgY)
+              .text(zone);
+          }
+        }
+      }, 120);
+    });
+
+    // map panel close button
+    document.getElementById('mapPanelClose').addEventListener('click', ()=> {
+      const panel = document.getElementById('mapPanel');
+      panel.style.display = 'none';
+      panel.setAttribute('aria-hidden','true');
+    });
+
   </script>
-  <script>
+
+<script>
     const sidebar = document.getElementById("sidebar");
     const toggleBtn = document.getElementById("toggleBtn");
 
