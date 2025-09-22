@@ -65,7 +65,7 @@
       .state.selected { stroke: #0b1220; stroke-width: 2.5; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35)); opacity:1; }
       /* stronger card highlight */
       .region.highlight {
-        box-shadow: 0 0 28px rgba(28, 189, 114, 0.9);
+        box-shadow: 0 0 28px rgba(28, 189, 114, 0.95);
         transform: translateY(-4px) scale(1.02);
         border-left-color: #0b8a4a !important;
         background: linear-gradient(180deg,#fffefb,#f7fff5);
@@ -90,6 +90,15 @@
       }
       .map-panel h4 { margin:0 0 6px; font-size:14px; color:#0b1220; }
       .map-panel .close { position:absolute; top:8px; right:8px; background:#eee; border-radius:6px; padding:4px 6px; cursor:pointer; font-weight:600; }
+
+      /* overlay shown when map panel open (click to close) */
+      .map-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.25);
+        z-index: 1050;
+      }
 
   /* Keep your other existing zoom-buttons button styles and entire styling below unchanged */
   </style>
@@ -174,7 +183,7 @@
 
   /* Regions - Main Focus */
   .regions-section{ margin-top:16px; }
-  .regions-section h2{ margin:0 0 6px 0; font-size:16px; color:var(--accent-1); }
+  .regions-section h2{ margin:0 0 6px 0; font-size:16px; color:#0b1220; }
   .regions-note{ font-size:12px; color:var(--muted); margin-bottom:12px; }
 
   .regions{ display:grid; gap:10px; grid-template-columns: repeat(3, 1fr); }
@@ -263,7 +272,17 @@
     /* put sidebar toggle & sidebar to bottom on phones */
     .sidebar { top: auto; bottom: 0; right: -100%; width: 100%; border-radius: 12px 12px 0 0; }
     .sidebar.open { right: 0; }
-    .sidebar-toggle { top: auto; bottom: 84px; left: 10px; }
+    .sidebar-toggle { top: auto; bottom: 84px; left: 10px; padding: 8px 10px; font-size: 14px; }
+    /* map-panel bottom-sheet style on phones */
+    .map-panel {
+      left: 10px !important;
+      right: 10px !important;
+      bottom: 84px !important;
+      top: auto !important;
+      width: calc(100% - 20px) !important;
+      max-width: none !important;
+      max-height: 44% !important;
+    }
   }
 
   /* Sidebar Styles */
@@ -313,6 +332,9 @@
   .sidebar-toggle:hover {
     background: #148c54;
   }
+  /* helper to hide toggle (used on small screens while sidebar open) */
+  .sidebar-toggle.hidden { display:none !important; }
+
 </style>
 </head>
 <body>
@@ -368,7 +390,8 @@
       </div>
 
       <section class="regions-section">
-        <h2>Regional Security Zones</h2>
+        <h2>Security Details across Zones</h2>
+        <div class="regions-note">Threats, impacts and recommended precautions — click on map to navigate to the respective zone or directly click on zone to expand details</div>
         <div style="text-align: center;">
           <div id="map">
             <div class="zoom-buttons">
@@ -385,7 +408,6 @@
           </div>
         </div>
       <div class="tooltip" id="tooltip"></div>
-        <div class="regions-note">Threats, impacts and recommended precautions — click a zone to expand details</div>
 
         <div class="regions">
           <div class="region hi" data-region="ne">
@@ -511,6 +533,9 @@
         Next update: October 6, 2025
       </div>
     </footer>
+
+<!-- overlay for closing the map panel -->
+<div id="mapOverlay" class="map-overlay" aria-hidden="true"></div>
 
 <script>
   // Counter animations
@@ -648,16 +673,19 @@
           const card = document.querySelector(`.region[data-region="${code}"]`);
           if (card) {
             // scroll and open details and strongly highlight
-            card.scrollIntoView({ behavior:"smooth", block:"center" });
+            const headerOffset = Math.min(window.innerHeight*0.12, 120); // approximate header offset
+            const rect = card.getBoundingClientRect();
+            const currentScroll = window.scrollY || window.pageYOffset;
+            const targetY = currentScroll + rect.top - headerOffset - (window.innerHeight*0.08);
+            window.scrollTo({ top: targetY, behavior: "smooth" });
 
             // remove highlight from others
             document.querySelectorAll('.region').forEach(r => r.classList.remove('highlight'));
-
             card.classList.add('highlight');
             card.classList.add('active'); // auto-open details
 
             // remove highlight after a visible duration
-            setTimeout(()=>card.classList.remove('highlight'), 1800);
+            setTimeout(()=>card.classList.remove('highlight'), 2000);
 
             // populate the little map-panel with the card's details (so user sees precautions instantly)
             const panel = document.getElementById('mapPanel');
@@ -674,8 +702,7 @@
             if(detailsEl) html += `<div>${detailsEl.innerHTML}</div>`;
             body.innerHTML = html;
 
-            panel.style.display = 'block';
-            panel.setAttribute('aria-hidden','false');
+            openMapPanel();
           }
         });
 
@@ -720,7 +747,7 @@
     window.addEventListener('resize', ()=> {
       if(!geoData) return;
       clearTimeout(resizeDeb);
-      resizeDeb = setTimeout(()=>{
+      resizeDeb = setTimeout(()=>{ 
         projection.fitSize([WIDTH, HEIGHT], geoData);
         // redraw paths and labels to use new projection
         d3.selectAll('path.state').attr('d', path);
@@ -741,12 +768,28 @@
       }, 120);
     });
 
-    // map panel close button
-    document.getElementById('mapPanelClose').addEventListener('click', ()=> {
-      const panel = document.getElementById('mapPanel');
+    // map panel open/close helpers + overlay behavior
+    const panel = document.getElementById('mapPanel');
+    const panelClose = document.getElementById('mapPanelClose');
+    const overlay = document.getElementById('mapOverlay');
+
+    function openMapPanel(){
+      panel.style.display = 'block';
+      panel.setAttribute('aria-hidden','false');
+      overlay.style.display = 'block';
+      overlay.setAttribute('aria-hidden','false');
+    }
+    function closeMapPanel(){
       panel.style.display = 'none';
       panel.setAttribute('aria-hidden','true');
-    });
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+      // clear selected map state
+      d3.selectAll('.state').classed('selected', false);
+    }
+
+    panelClose.addEventListener('click', closeMapPanel);
+    overlay.addEventListener('click', closeMapPanel);
 
   </script>
 
@@ -754,14 +797,41 @@
     const sidebar = document.getElementById("sidebar");
     const toggleBtn = document.getElementById("toggleBtn");
 
+    function updateToggleLabel(){
+      // Use short icon-only label on narrow screens
+      if(window.innerWidth <= 420){
+        toggleBtn.textContent = "📅";
+      } else {
+        toggleBtn.textContent = sidebar.classList.contains('open') ? "✖ Close" : "📅 Next Update";
+      }
+    }
+    // initialize label
+    updateToggleLabel();
+    window.addEventListener('resize', updateToggleLabel);
+
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("open");
+      updateToggleLabel();
 
-      // Change button text when sidebar is open/closed
-      if (sidebar.classList.contains("open")) {
-        toggleBtn.textContent = "✖ Close";
-      } else {
-        toggleBtn.textContent = "📅 Next Update";
+      // On small screens hide the toggle while the sidebar slides in (so it doesn't block the panel)
+      if(window.innerWidth <= 600){
+        if(sidebar.classList.contains('open')){
+          toggleBtn.classList.add('hidden');
+        } else {
+          toggleBtn.classList.remove('hidden');
+        }
+      }
+    });
+
+    // If user closes sidebar by clicking outside (optional) — clicking overlay will close too
+    document.addEventListener('click', (e)=>{
+      // if sidebar is open and user clicks outside sidebar and not on the toggle, close it (desktop)
+      if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)){
+        // but ignore map clicks
+        if(!e.target.closest('#map') && window.innerWidth > 600){
+          sidebar.classList.remove('open');
+          updateToggleLabel();
+        }
       }
     });
   </script>
