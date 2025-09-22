@@ -72,34 +72,6 @@
         transition: all 0.28s ease;
       }
 
-      /* small panel inside map that shows the region details on click */
-      .map-panel {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-        width: 280px;
-        max-width: 46%;
-        background: white;
-        border-radius: 8px;
-        padding: 10px 12px;
-        box-shadow: 0 6px 24px rgba(12,20,40,0.18);
-        z-index: 1100;
-        font-size: 13px;
-        color: #071033;
-        display: none; /* show when populated */
-      }
-      .map-panel h4 { margin:0 0 6px; font-size:14px; color:#0b1220; }
-      .map-panel .close { position:absolute; top:8px; right:8px; background:#eee; border-radius:6px; padding:4px 6px; cursor:pointer; font-weight:600; }
-
-      /* overlay shown when map panel open (click to close) */
-      .map-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.25);
-        z-index: 1050;
-      }
-
   /* Keep your other existing zoom-buttons button styles and entire styling below unchanged */
   </style>
 
@@ -273,16 +245,6 @@
     .sidebar { top: auto; bottom: 0; right: -100%; width: 100%; border-radius: 12px 12px 0 0; }
     .sidebar.open { right: 0; }
     .sidebar-toggle { top: auto; bottom: 84px; left: 10px; padding: 8px 10px; font-size: 14px; }
-    /* map-panel bottom-sheet style on phones */
-    .map-panel {
-      left: 10px !important;
-      right: 10px !important;
-      bottom: 84px !important;
-      top: auto !important;
-      width: calc(100% - 20px) !important;
-      max-width: none !important;
-      max-height: 44% !important;
-    }
   }
 
   /* Sidebar Styles */
@@ -319,7 +281,7 @@
     left: 0; /* stick to left edge */
     background: #1cbd72;
     color: #fff;
-    padding: 10px 14px;
+    padding: 8px 10px;
     border-radius: 0 12px 12px 0; /* rounded on right */
     font-size: 14px;
     font-weight: 600;
@@ -327,14 +289,12 @@
     box-shadow: 2px 0 6px rgba(0,0,0,0.3);
     z-index: 1001;
     transition: background 0.18s;
+    /* keep it small */
   }
 
   .sidebar-toggle:hover {
     background: #148c54;
   }
-  /* helper to hide toggle (used on small screens while sidebar open) */
-  .sidebar-toggle.hidden { display:none !important; }
-
 </style>
 </head>
 <body>
@@ -398,12 +358,6 @@
               <button id="zoom_in">+</button>
               <button id="zoom_out">−</button>
               <button id="reset">⟳</button>
-            </div>
-            <!-- Map panel to show region details immediately when clicking the map -->
-            <div class="map-panel" id="mapPanel" aria-hidden="true">
-              <div class="close" id="mapPanelClose">✖</div>
-              <h4 id="mapPanelTitle"></h4>
-              <div id="mapPanelBody"></div>
             </div>
           </div>
         </div>
@@ -533,9 +487,6 @@
         Next update: October 6, 2025
       </div>
     </footer>
-
-<!-- overlay for closing the map panel -->
-<div id="mapOverlay" class="map-overlay" aria-hidden="true"></div>
 
 <script>
   // Counter animations
@@ -687,22 +638,7 @@
             // remove highlight after a visible duration
             setTimeout(()=>card.classList.remove('highlight'), 2000);
 
-            // populate the little map-panel with the card's details (so user sees precautions instantly)
-            const panel = document.getElementById('mapPanel');
-            const title = document.getElementById('mapPanelTitle');
-            const body = document.getElementById('mapPanelBody');
-
-            // Use card's title and details HTML (keeps your exact text)
-            title.textContent = card.querySelector('h3').textContent;
-            const detailsEl = card.querySelector('.details');
-            const impactEl = card.querySelector('.impact') || card.querySelector('p');
-            // build body: impact + details
-            let html = "";
-            if(impactEl) html += `<p style="margin:0 0 6px 0; font-weight:600;">${impactEl.textContent}</p>`;
-            if(detailsEl) html += `<div>${detailsEl.innerHTML}</div>`;
-            body.innerHTML = html;
-
-            openMapPanel();
+            // NOTE: map summary panel was intentionally removed per your request
           }
         });
 
@@ -767,30 +703,6 @@
         }
       }, 120);
     });
-
-    // map panel open/close helpers + overlay behavior
-    const panel = document.getElementById('mapPanel');
-    const panelClose = document.getElementById('mapPanelClose');
-    const overlay = document.getElementById('mapOverlay');
-
-    function openMapPanel(){
-      panel.style.display = 'block';
-      panel.setAttribute('aria-hidden','false');
-      overlay.style.display = 'block';
-      overlay.setAttribute('aria-hidden','false');
-    }
-    function closeMapPanel(){
-      panel.style.display = 'none';
-      panel.setAttribute('aria-hidden','true');
-      overlay.style.display = 'none';
-      overlay.setAttribute('aria-hidden','true');
-      // clear selected map state
-      d3.selectAll('.state').classed('selected', false);
-    }
-
-    panelClose.addEventListener('click', closeMapPanel);
-    overlay.addEventListener('click', closeMapPanel);
-
   </script>
 
 <script>
@@ -798,9 +710,9 @@
     const toggleBtn = document.getElementById("toggleBtn");
 
     function updateToggleLabel(){
-      // Use short icon-only label on narrow screens
+      // small screens: use icon only but keep it visible; when open show a close icon
       if(window.innerWidth <= 420){
-        toggleBtn.textContent = "📅";
+        toggleBtn.textContent = sidebar.classList.contains('open') ? "✖" : "📅";
       } else {
         toggleBtn.textContent = sidebar.classList.contains('open') ? "✖ Close" : "📅 Next Update";
       }
@@ -812,22 +724,12 @@
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("open");
       updateToggleLabel();
-
-      // On small screens hide the toggle while the sidebar slides in (so it doesn't block the panel)
-      if(window.innerWidth <= 600){
-        if(sidebar.classList.contains('open')){
-          toggleBtn.classList.add('hidden');
-        } else {
-          toggleBtn.classList.remove('hidden');
-        }
-      }
+      // do NOT hide the toggle button — user requested the close button to remain
     });
 
-    // If user closes sidebar by clicking outside (optional) — clicking overlay will close too
+    // If user clicks outside sidebar (desktop) close it — but ignore clicks inside map area
     document.addEventListener('click', (e)=>{
-      // if sidebar is open and user clicks outside sidebar and not on the toggle, close it (desktop)
       if(sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)){
-        // but ignore map clicks
         if(!e.target.closest('#map') && window.innerWidth > 600){
           sidebar.classList.remove('open');
           updateToggleLabel();
