@@ -1,5 +1,7 @@
+
+
 # Logs
-logs
+newsletters/Dashboard/logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,9 +9,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist-ssr
+newsletters/Dashboard/node_modules
+newsletters/Dashboard/dist
+newsletters/Dashboard/dist-old
 *.local
+
+Grok/key.json
 
 # Editor directories and files
 .vscode/*
@@ -23,4 +28,4 @@ dist-ssr
 *.sw?
 
 # Ignored for the template, you probably want to remove it:
-package-lock.json
+newsletters/Dashboard/package-lock.json

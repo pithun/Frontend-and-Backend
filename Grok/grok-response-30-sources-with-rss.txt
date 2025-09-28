@@ -1,0 +1,31 @@
+
+Citations:
+ ['https://saharareporters.com/2025/09/28/breaking-bandits-abduct-businessman-midnight-attack-kwara-community', 'https://modernghana.com/news/1432967/nigeria-fights-back-against-banditry-and-insecurit.amp', 'https://defenceweb.co.za/security/civil-security/armed-banditry-is-becoming-a-crisis-in-nigeria-why-fixing-the-police-is-key', 'https://link.springer.com/article/10.1057/s41284-025-00477-1', 'https://www.tandfonline.com/doi/full/10.1080/17419166.2023.2164924', 'https://guardian.ng/opinion/as-nigeria-fights-back-against-banditry-kidnapping', 'https://www.tandfonline.com/doi/full/10.1080/17467586.2024.2356509', 'https://crisisgroup.org/africa/west-africa/nigeria', 'https://www.americansecurityproject.org/combating-banditry-in-northwest-nigeria/', 'https://x.com/jayjayehi/status/1972230396755771875', 'https://x.com/AsuitTutors/status/1972270763949359487', 'https://x.com/BELVAZ89/status/1972264739443995018', 'https://x.com/kingdezest/status/1972307614752256205', 'https://x.com/justeventsonlin/status/1972276304486535242', 'https://x.com/owoniyilb/status/1972264058675224946', 'https://news.google.com/rss/articles/CBMihgFBVV95cUxNVXM0WjVTeGJoVnFpakswbUg3Z1ZrS2wxaWlqcS1Bc3pSeGFWeW5VZU9ReHFPOEVCUmEzTS0zUV9RTUkzeHlxejZzeWxURzQtOE1lanV6SXEyZFBwaE5ZbEt0c1VhSmRPT2lqMXJ0ZjBlWFlydmxFRFVZSjdpYWdhVVVEVUNkUQ?oc=5', 'https://news.google.com/rss/articles/CBMimgFBVV95cUxOMXN1NkRrU3d5bXNRVzBDUFFIbGU4bnVjNUl2ejc5RXZfcHpZVjJzVzJrU2htOG1hUElOcDJKU25SNFNnVHNXQ2ZrR1hqTkFQV3VrSHVrVk1mU1BYWC12MzRGWEJyUVZ0S2g4LWJqcllKbjlaUHF2azhRUENubHFJVG40ZnU4bmJTWHNvejc0V2lVVHRnTHJSSXRB?oc=5', 'https://news.google.com/rss/articles/CBMi2gFBVV95cUxQbTBYblhSS3hNNmExblQ3bEZaeU13YVlTQlEtTW1hdnN2Rlc1cWJFX0tMNnRQSk54UjFCUHBPUXhmeWFtUm1yTlp1d0F0SFNkMmhMTk9FdnlYY3h2dTBnWHBwLWFvTHZfdkVRYW1hVkpwMlN0Mm5oYTJ6b2RWN2Q2cWt3SzRlWFplTzI4RjFGWm1lWmZVMkdFWnZTTWhDeHYxaUcwcEo4cXhJcW5ocmVxdDJHMTN3SnRnemlXSUZuTmg1WnVqWjhkT0pTeGJCOUVlbE5Cek9pMnlQZw?oc=5', 'https://news.google.com/rss/articles/CBMi2AFBVV95cUxOa2FSUXRWWU5vamo2Z2xEdVZhc0VKOEVCZDRNdEFxczNrMkhOQkZ5V2U0MXpMbDlZQUhRZEtVRUx1VlZKUWtDb3ZlVS16dHdqRzlnaG9XcDM1UTdtUXNoSGRhYjc0S0c2VFFNZGNWc055MEVwYzlCZVpDTmp1NDJQQ3VmcklIYkVTSFVfYkJ6cDkwYVlZdXNmdE5pZGRZVTV5Z2NBZHU2MThZejh2NnM3Z1kyRGVHaG9SNXJnem5qRGVJZ3MtVW8zSy12bG9TeEpiM0VYZEVlVEw?oc=5', 'https://news.google.com/rss/articles/CBMirAFBVV95cUxOU2lTN3M4elFzZjQ4amxVQldEQWdhcGF3ejg3aHc1S3ByMU9NQlV3RUhyc2hudTNFRkxqd0t3RmUyTW04cktuTTBuTzZCX3d4cEwtRmxWckwxaGdIY21SN2tBeE1JMk0wYUFsSUtZcVZWMDhLUzhyTEJtaXQtVGgtTlBIbWdnRHp6QlYzeVktVl9iZ2hEbHozdU1rcUdPajA1UzZNdzdWaC1maXRN0gGyAUFVX3lxTE9maEdWcHhsRGk3cU9XVGl0Q2pPakRCS01QUkZqZERaSTBFNGtyZWRFSVV6R0RqekNBWTBHTFYxb1I0ZGptaGpwR3VBcE56eFNFTGVtZ0VzbEprTkduaWpDZ0J2NTBKcWp0Tlhnd0N4cHQxZVNoOEFScEVWV3R4RlpHb2JzalhIb1Q4Qk1ldWRKMWxKZEM0Z0tnblRvUnhMbWFjbDNQYjdPbzU3d2FLQkE1R2c?oc=5', 'https://news.google.com/rss/articles/CBMiogFBVV95cUxQN0hSZWlmd0dBM0VSQUt3QzdQaGh3bmZuZUw0MEtYbVI4ZnJmemlGcHNTRDVMdXNSNENnUFhnMXhDM2QxUnJHZkZuSWhfVG5BNkVlSlVYS2JwbnFYN296QUpFaXJXSGpHQlBma0ZIZ0tXTHFZeE1wb3E1V2U1NUM1Ti1udS11RF9YSlVfLVM1cFBpMjBtSTNwN0EwNURoZ1FQMFE?oc=5', 'https://news.google.com/rss/articles/CBMioAFBVV95cUxQTllHeVpDNXQ0LTVTRm9jdmdTZFNuN21oY3hhaEJacEJIM1pwd2FZSnpoN0FkN1lIUTdZZXpTNmNhcUowVVZlalBuaEJESHpHdVZteERKY1FrTk9HNHMwRnZoTUhjUkZZYW8tUjhYQ2VnRDYzR2ZqU0lkN0NhaDUwcS1ZYU9ONnhyWVJfdlVhTVpVSTJfRUJ1ZHVFblNoQzZ5?oc=5']
+
+Parsed News Items:
+ [
+  {
+    "title": "Bandits Abduct Businessman in Midnight Attack on Kwara Community",
+    "description": "Armed bandits launched a midnight raid on a community in Kwara State, abducting a prominent businessman during the attack.",
+    "state": "Kwara",
+    "lga": null,
+    "incident date": "2025-09-28",
+    "incidentTime": "00:00"
+  },
+  {
+    "title": "Bandits Kill 10 Vigilantes and Abduct Several in Oke Ode Community, Kwara",
+    "description": "Gunmen suspected to be bandits attacked Oke Ode community in Kwara State, killing 10 vigilantes and abducting several residents, despite government claims of repelling the assault.",
+    "state": "Kwara",
+    "lga": "Ifelodun",
+    "incident date": "2025-09-28",
+    "incidentTime": null
+  },
+  {
+    "title": "NSCDC Launches Manhunt for Attackers of Jigawa Polytechnic Students",
+    "description": "The Nigeria Security and Civil Defence Corps has initiated a search for assailants who attacked students at a polytechnic in Jigawa State, highlighting ongoing security threats in educational institutions.",
+    "state": "Jigawa",
+    "lga": null,
+    "incident date": "2025-09-28",
+    "incidentTime": null
+  }
+]
