@@ -187,7 +187,7 @@ def filter_and_publish(news_data, api_key, folder="news_data"):
 
     # Load past 5 days
     past_news = load_recent_news(folder, days=5)
-    display(past_news)
+    print(past_news)
 
     # Save current
     filepath = save_news_to_csv(news_data, folder)
