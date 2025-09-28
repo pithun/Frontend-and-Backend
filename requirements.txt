@@ -1,10 +1,7 @@
 pandas
 requests
 pathlib
-re
+regex
 beautifulsoup4
-xai_sdk
-os
-json
-datetime
+xai-sdk
 scikit-learn
