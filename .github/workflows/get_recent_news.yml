@@ -24,7 +24,7 @@ jobs:
 
       - name: Run pipeline
         env:
-          GROK_API_KEY: ${{ secrets.XAI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           CONVEX_API_KEY: ${{ secrets.CONVEX_API_KEY }}
         run: |
           python get_news.py
