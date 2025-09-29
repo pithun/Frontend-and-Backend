@@ -149,22 +149,33 @@ def fetch_security_news(api_key: str):
         ]
     )
 
+    PROMPT_STRING="""
+    Please retrieve news articles from the past 8 hours related to security issues in Nigeria, including incidents such as banditry, gunmen attacks, and other violent activities.  
+
+    The response must be returned as a valid JSON array. Each news item must follow this schema exactly:
+
+    {
+    "title": "<headline of the news>",
+    "description": "<concise summary>",
+    "state": "<state of occurrence>",
+    "lga": "<local government area, compulsory — infer if not explicitly stated>",
+    "incidentDate": "<date in YYYY-MM-DD format; if unavailable, use today's date>",
+    "incidentTime": "<time in HH:MM 24-hour format; if unavailable, use '00:00'>",
+    "status": "<one of: 'High', 'Medium', or 'Low'>"
+    }
+
+    Rules:
+    - All fields are required. If a value cannot be found, return `Null` (except for `incidentDate` and `incidentTime`, which must follow the fallback rules above).
+    - Ensure the output is strictly valid JSON and can be parsed without errors.
+    - Do not include extra text, explanations, or formatting outside of the JSON.
+
+    """
+
     chat = client.chat.create(
         model="grok-4-fast-reasoning-latest",
-        messages=[user(
-            """I need news from the last 8 hours related to security issues such as banditry, gunmen or any kind on violent activities
-            in Nigeria. I need the output json formatted. For each news, return like this:
-            {"title": "<title>", 
-             "description":"<summary>", 
-             "state":"<state of occurrence>", 
-             "lga":"<Please try to infer the lga from the news, the lga is compulsory>", 
-             "incidentDate":"<date>", 
-             "incidentTime":"<time if available>",
-             "status":"High" or "Medium" or "Low"}.
-            If any of the fields isn't available return Null, but for date or time, 
-            return current date and for time return 00:00."""
-        )],
-        search_parameters=search_config
+        messages=[user(PROMPT_STRING)],
+        search_parameters=search_config,
+        temperature=0
     )
 
     response = chat.sample()
