@@ -55,12 +55,16 @@ def load_recent_news(folder="news_data", days=5):
     
     cutoff = datetime.now() - timedelta(days=days)
     dfs = []
-    for fname in os.listdir(os.path.join(folder, exec_month)):
+
+    news_path=os.path.join(folder, exec_month)
+    os.makedirs(news_path, exist_ok=True)
+
+    for fname in os.listdir(news_path):
         if fname.endswith(".csv"):
             try:
                 file_date = datetime.strptime(fname.split(".")[0], "%Y%m%d_%H")
                 if file_date >= cutoff:
-                    dfs.append(pd.read_csv(os.path.join(folder, exec_month, fname)))
+                    dfs.append(pd.read_csv(os.path.join(news_path, fname)))
             except Exception:
                 pass
     return pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
@@ -113,8 +117,10 @@ def publish_news(api_key: str, news_items: list):
         return response.json()
     except requests.exceptions.HTTPError as http_err:
         print(f"❌ HTTP error occurred: {http_err} - {response.text}")
+        raise
     except Exception as err:
         print(f"❌ Other error occurred: {err}")
+        raise
 
 def fetch_security_news(api_key: str):
     """
