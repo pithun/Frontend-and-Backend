@@ -174,6 +174,8 @@ def fetch_security_news(api_key: str):
     - All fields are required. If a value cannot be found, return `Null` (except for `incidentDate` and `incidentTime`, which must follow the fallback rules above).
     - Ensure the output is strictly valid JSON and can be parsed without errors.
     - Do not include extra text, explanations, or formatting outside of the JSON.
+    - If there are multiple states, please create separate entries for each state and fill in an approximate local government but lga must be filled.
+    - The "status" field should reflect the severity of the incident based on the description (e.g., "High" for fatalities, "Medium" for injuries, "Low" for property damage only).
 
     """
 
