@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SCIDaR Security Newsletter – Sep 21, 2025</title>
+  <meta name="description" content="SCIDaR Security Newsletter – Major Incidents & Trends (English / Français) – Full report.">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: linear-gradient(180deg,#ecfeff 0%, #f6fbfd 40%, #ffffff 100%);
+      --accent-1: #18a3b2;
+      --accent-2: #0e76a8;
+      --muted: #586b70;
+      --card-bg: rgba(255,255,255,0.9);
+      --glass: rgba(255,255,255,0.7);
+      --radius: 14px;
+      --maxwidth: 900px;
+      --shadow-sm: 0 6px 18px rgba(18, 28, 33, 0.06);
+      --shadow-lg: 0 18px 40px rgba(18,28,33,0.08);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-size:15px;
+      line-height:1.6;
+      color:#05323a;
+      background:var(--bg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px 18px;
+      display:flex;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--maxwidth);
+      background:transparent;
+      border-radius:18px;
+      padding:22px;
+      position:relative;
+    }
+
+    /* Header with animated background */
+    header.top{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:24px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.8));
+      padding:16px 20px;
+      border-radius:14px;
+      box-shadow: var(--shadow-sm);
+      border:1px solid rgba(14,118,168,0.08);
+      position:relative;
+      overflow:hidden;
+      backdrop-filter:blur(10px);
+    }
+
+    /* Animated gradient background */
+    @keyframes gradientShift {
+      0%, 100% { 
+        background-position: 0% 50%;
+        opacity: 0.15;
+      }
+      50% { 
+        background-position: 100% 50%;
+        opacity: 0.25;
+      }
+    }
+    
+    .animated-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        45deg,
+        rgba(24,163,178,0.2),
+        rgba(14,118,168,0.2),
+        rgba(24,163,178,0.2),
+        rgba(14,118,168,0.2)
+      );
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      pointer-events: none;
+    }
+
+    /* Floating light orbs */
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.3;
+      }
+      33% { 
+        transform: translateY(-20px) translateX(10px) scale(1.1);
+        opacity: 0.5;
+      }
+      66% { 
+        transform: translateY(-10px) translateX(-10px) scale(0.9);
+        opacity: 0.4;
+      }
+    }
+    
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .orb1 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(24,163,178,0.3), transparent);
+      top: -50px;
+      right: 10%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .orb2 {
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(14,118,168,0.25), transparent);
+      bottom: -30px;
+      left: 15%;
+      animation: float 8s ease-in-out infinite 2s;
+    }
+
+    .brand{display:flex;gap:12px;align-items:center;position:relative;z-index:1}
+    .logo{
+      width:60px;height:60px;border-radius:14px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      color:white;font-weight:800;font-size:20px;
+      box-shadow: 0 8px 20px rgba(14,118,168,0.15);
+      animation: logoFloat 3s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover{
+      transform: scale(1.05) rotate(5deg);
+    }
+    
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    .title h1{margin:0;font-size:19px;color:#03313a;font-weight:800}
+    .title p{margin:0;color:var(--muted);font-size:13px;margin-top:3px}
+
+    .lang-toggle{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+    .lang-toggle button{
+      background:transparent;
+      border:1px solid rgba(5,50,58,0.1);
+      padding:9px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      color:var(--muted);
+      font-weight:700;
+      transition:all .3s ease;
+      font-size:13px;
+    }
+    .lang-toggle button:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14,118,168,0.1);
+    }
+    .lang-toggle button.active{
+      background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+      color:white;
+      border:none;
+      box-shadow: 0 4px 15px rgba(14,118,168,0.25);
+      transform: scale(1.05);
+    }
+
+    /* Hero section with animation */
+    .hero{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      margin-bottom:28px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(246,251,253,0.95));
+      border-radius:16px;
+      padding:24px;
+      border:1px solid rgba(14,118,168,0.06);
+      box-shadow:var(--shadow-sm);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(24,163,178,0.05), transparent 70%);
+      animation: heroGlow 10s linear infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes heroGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .hero-content{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;position:relative;z-index:1}
+    .hero-text{flex:1;min-width:280px}
+    .hero h2{margin:0;font-size:22px;color:var(--accent-2);font-weight:800;line-height:1.3}
+    .hero .meta{color:var(--muted);margin-top:10px;font-size:14px;font-weight:500}
+
+    .chips{display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:1}
+    .chip{
+      background:rgba(255,255,255,0.8);
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(14,118,168,0.12);
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+      white-space:nowrap;
+      backdrop-filter:blur(5px);
+      transition:all .3s ease;
+    }
+    .chip:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14,118,168,0.15);
+    }
+
+    /* Single column layout */
+    main.content{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      margin-top:12px;
+    }
+
+    /* Animated cards */
+    .card{
+      background:var(--card-bg);
+      border-radius:14px;
+      padding:24px;
+      border:1px solid rgba(6,50,58,0.05);
+      box-shadow:var(--shadow-sm);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      hyphens:auto;
+      transition:all .4s cubic-bezier(0.4, 0, 0.2, 1);
+      position:relative;
+      overflow:hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(24,163,178,0.08), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .card:hover::before {
+      left: 100%;
+    }
+    
+    .card:hover{
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 20px 45px rgba(18,28,33,0.12);
+      border-color: rgba(14,118,168,0.15);
+    }
+
+    .card h3{
+      margin:0 0 16px 0;
+      color:var(--accent-2);
+      word-wrap:break-word;
+      font-size:19px;
+      font-weight:800;
+      position:relative;
+      padding-bottom:12px;
+    }
+    
+    .card h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      border-radius: 2px;
+    }
+    
+    .card h4{margin:12px 0 10px 0;color:var(--accent-2);font-size:15px;font-weight:700}
+    .card p{margin:0;color:var(--muted);word-wrap:break-word;line-height:1.7}
+
+    .regions{display:grid;gap:16px;margin-top:8px}
+    .region{
+      display:grid;
+      grid-template-columns:48px 1fr;
+      gap:16px;
+      align-items:start;
+      padding:16px;
+      border-radius:12px;
+      background:linear-gradient(135deg, #ffffff, #fbffff);
+      border:1px solid rgba(6,50,58,0.04);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      hyphens:auto;
+      transition:all .3s ease;
+    }
+    
+    .region:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 20px rgba(14,118,168,0.08);
+      border-color: rgba(14,118,168,0.12);
+    }
+    
+    .region svg{width:48px;height:48px;flex-shrink:0;transition:transform .3s ease}
+    .region:hover svg{transform:scale(1.1) rotate(5deg)}
+    
+    .region h4{margin:0;font-size:16px;color:#044a54;word-wrap:break-word;font-weight:700}
+    .region small{
+      color:var(--muted);
+      display:block;
+      margin-top:8px;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.6;
+    }
+    .region a{
+      color:var(--accent-2);
+      text-decoration:none;
+      font-size:12px;
+      margin-right:10px;
+      display:inline-block;
+      margin-top:4px;
+      font-weight:600;
+      transition:all .2s ease;
+    }
+    .region a:hover{
+      text-decoration:underline;
+      transform:translateX(3px);
+    }
+
+    ul.advisory, .updates-list, .risk-list{
+      margin:12px 0 0 20px;
+      color:var(--muted);
+      padding-left:4px;
+    }
+    ul.advisory li, .updates-list li, .risk-list li{
+      margin:10px 0;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      line-height:1.7;
+      transition:all .2s ease;
+    }
+    
+    ul.advisory li:hover, .updates-list li:hover, .risk-list li:hover{
+      transform:translateX(5px);
+      color:#05323a;
+    }
+
+    .mini{
+      background:linear-gradient(135deg,#fff,#fbffff);
+      padding:16px;
+      border-radius:12px;
+      border:1px solid rgba(6,50,58,0.04);
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+      margin-bottom:12px;
+      line-height:1.6;
+      transition:all .3s ease;
+    }
+    
+    .mini:hover{
+      transform:translateX(5px);
+      box-shadow: 0 4px 15px rgba(14,118,168,0.08);
+      border-color:rgba(14,118,168,0.1);
+    }
+
+    .updates-list a, .region a{
+      color:var(--accent-2);
+      text-decoration:none;
+      font-weight:600;
+      transition:all .2s ease;
+    }
+    .updates-list a:hover{
+      text-decoration:underline;
+      color:var(--accent-1);
+    }
+
+    .highlight-box{
+      border-left:4px solid var(--accent-2);
+      padding-left:16px;
+      margin:16px 0;
+      background:rgba(24,163,178,0.03);
+      padding:16px;
+      padding-left:20px;
+      border-radius:8px;
+    }
+
+    footer{
+      margin-top:28px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+      padding:16px;
+      opacity:0.9;
+    }
+
+    .source-note{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:10px;
+      opacity:0.95;
+      line-height:1.5;
+    }
+
+    /* Floating action buttons with animation */
+    .fab-stack{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      z-index:999;
+    }
+    .fab{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+      color:white;
+      border:none;
+      box-shadow:0 8px 25px rgba(14,118,168,0.3);
+      cursor:pointer;
+      font-weight:700;
+      font-size:16px;
+      transition:all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation:fabPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 8px 25px rgba(14,118,168,0.3); }
+      50% { box-shadow: 0 8px 35px rgba(14,118,168,0.5), 0 0 20px rgba(24,163,178,0.3); }
+    }
+    
+    .fab:hover{
+      transform:scale(1.15) rotate(10deg);
+      box-shadow:0 12px 35px rgba(14,118,168,0.4);
+    }
+    
+    .fab:active{
+      transform:scale(0.95);
+    }
+
+    /* Reveal animation */
+    .reveal{
+      opacity:0;
+      transform:translateY(30px);
+      transition:all .8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .reveal.in{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .animated-title{
+      display:inline-block;
+      background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      font-weight:800;
+      animation:titleShine 3s ease-in-out infinite;
+    }
+    
+    @keyframes titleShine {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+    }
+
+    /* Responsive */
+    @media (max-width:859px){
+      .hero-content{flex-direction:column}
+      .chips{justify-content:flex-start}
+    }
+    
+    @media (max-width:420px){
+      body{padding:14px}
+      .logo{width:52px;height:52px;font-size:18px}
+      .hero h2{font-size:19px}
+      .fab{width:50px;height:50px;font-size:14px}
+      .chip{font-size:12px;padding:8px 12px}
+      .card{padding:18px}
+      header.top{padding:14px 16px}
+    }
+
+    @media print{
+      body{background:white}
+      .fab-stack, .lang-toggle, .animated-bg, .orb{display:none}
+      header.top, .hero{box-shadow:none;border:none}
+      .card{page-break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  
+  <div class="wrap" role="main" aria-label="SCIDaR Security Newsletter">
+    <header class="top" role="banner">
+      <div class="animated-bg"></div>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">SC</div>
+        <div class="title">
+          <h1 id="site-title"><span class="animated-title">SCIDaR</span> Security Newsletter</h1>
+          <p id="site-sub">Regional update • Major incidents & trends</p>
+        </div>
+      </div>
+
+      <div class="lang-toggle" role="tablist" aria-label="Language toggle">
+        <button id="btn-en" role="tab" aria-selected="true">EN</button>
+        <button id="btn-fr" role="tab" aria-selected="false">FR</button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h2 id="hero-title">SCIDaR Security Newsletter – Major Incidents & Trends</h2>
+          <div class="meta" id="hero-meta">Date: September 21, 2025</div>
+          <div class="source-note" id="source-note">Content sourced from verified security intelligence reports</div>
+        </div>
+        <div class="chips" aria-label="Risk indicators">
+          <div class="chip" id="risk-chip">Risk level: High</div>
+          <div class="chip" id="advice-chip">Advisory: Avoid non-essential travel</div>
+        </div>
+      </div>
+    </section>
+
+    <main class="content">
+        <section id="incidents" class="card reveal">
+          <h3 id="incidents-title">Incident Summary: Key Regions & Trends (May–Sept 2025)</h3>
+          <div class="regions" id="regions"></div>
+        </section>
+
+        <section id="risk-section" class="card reveal">
+          <h3 id="risk-section-title">Risk Assessment</h3>
+          <div class="highlight-box">
+            <p id="risk-summary" style="margin:0;font-weight:600;color:#044a54"></p>
+          </div>
+          <h4 id="primary-risks-title">Primary Risks Identified:</h4>
+          <ul class="risk-list" id="risk-list"></ul>
+        </section>
+
+        <section id="advice" class="card reveal">
+          <h3 id="advice-title">Advisory & Travel Guidance</h3>
+          <div style="margin-top:12px">
+            <h4 id="advisory-all-title">For All Regions</h4>
+            <ul class="advisory" id="advisory-list"></ul>
+          </div>
+          <div style="margin-top:16px">
+            <h4 id="advisory-specific-title">Specific Zones (Nigeria / Sahel)</h4>
+            <ul class="advisory" id="advisory-specific"></ul>
+          </div>
+          <div style="margin-top:16px">
+            <h4 id="advisory-other-title">Other Risk Domains</h4>
+            <ul class="advisory" id="advisory-other"></ul>
+          </div>
+        </section>
+
+        <section id="strategy-section" class="card reveal">
+          <h3 id="strategy-title">Strategic Suggestions for Senior Management</h3>
+          <div id="strategy-list" style="margin-top:8px"></div>
+        </section>
+
+        <section id="updates" class="card reveal">
+          <h3 id="updates-title">Latest Verified Updates (post-5 Sep 2025)</h3>
+          <ul class="updates-list" id="updates-list"></ul>
+        </section>
+
+        <section id="complete" class="card reveal">
+          <h3 id="complete-title">Summary & Key Messages</h3>
+          <p id="keymsg-text" style="color:var(--muted);line-height:1.8;margin-top:8px"></p>
+        </section>
+
+        <section id="contacts" class="card reveal">
+          <h3 id="contacts-title">Prepared by</h3>
+          <p style="color:var(--muted);margin-top:10px;line-height:1.6" id="prepared-by">[Your Name], Head of Operations, Infrastructure, Travel, General Administration, Security & Safety</p>
+          <div style="color:var(--muted);font-size:13px;margin-top:10px;opacity:0.8">Date: September 21, 2025</div>
+        </section>
+    </main>
+
+    <footer>
+      <div class="source-note" id="footer-note">Document compiled from verified security intelligence sources</div>
+    </footer>
+  </div>
+
+  <div class="fab-stack" aria-label="Quick actions">
+    <button class="fab" id="lang-fab" title="Toggle language" aria-label="Toggle language">EN</button>
+    <button class="fab" id="top-fab" title="Scroll to top" aria-label="Scroll to top">↑</button>
+  </div>
+
+  <script>
+    const CONTENT = {
+      en: {
+        heroTitle: "SCIDaR Security Newsletter – Major Incidents & Trends",
+        date: "September 21, 2025",
+        sourceNote: "Content sourced from verified security intelligence reports",
+        regions: [
+          {
+            name: "West & North-West Nigeria",
+            summary: `<strong>Recent Incidents:</strong><br>
+• Several large-scale kidnappings and armed attacks (e.g. over 50 abducted in Zamfara, attacks on highways and villages)<br>
+• Oreke-Okeigbo attack (Kwara State): abduction of workers, killing of some police personnel<br>
+• Kwallajiya (Sokoto State, Tangaza LGA) attack: dozens killed/injured in farmsteads<br><br>
+<strong>Emerging Trends:</strong><br>
+• Kidnapping-for-ransom has become more widespread and increasingly organized<br>
+• Bandit groups (e.g., Lakurawa) are expanding their operations and acting more audaciously in rural areas<br>
+• Significant economic cost: ransom payments in billions of Naira; disruptions to agriculture, commerce, and travel<br>
+• Cybersecurity threats are rising, particularly in urban centres (e.g., attacks on Nigerian Customs platforms; disruption at ports)`,
+            links: [
+              { text: "Africa Center Review", url: "https://africacenter.org/daily-media-review/africa-media-review-for-august-5-2025/" },
+              { text: "Oreke-Okeigbo Attack", url: "https://en.wikipedia.org/wiki/2025_Oreke-Okeigbo_attack" },
+              { text: "Kwallajiya Attack", url: "https://en.wikipedia.org/wiki/2025_Kwallajiya_attack" },
+              { text: "Cyber Breaches Report", url: "https://www.ogunsecurity.com/post/five-major-cybersecurity-breaches-in-africa-july-august-2025" }
+            ]
+          },
+          {
+            name: "Mali & Sahel Region",
+            summary: `<strong>Recent Incidents:</strong><br>
+• JNIM has intensified operations in southern Mali (Ségou, Kayes), including major attacks and blockades of towns, and seizures of military property<br>
+• Kidnappings of foreign nationals in Mali, including on industrial or infrastructure sites<br><br>
+<strong>Emerging Trends:</strong><br>
+• Terrorist groups increasingly target economic and industrial assets<br>
+• Border regions remain porous; groups exploit governance weaknesses and logistical gaps<br>
+• Use of more complex attack methods (ambushes, blockades, kidnappings) instead of simple hit-and-run attacks`,
+            links: [
+              { text: "ACLED Africa Overview", url: "https://acleddata.com/update/africa-overview-august-2025" },
+              { text: "Solace Global Intel", url: "https://www.solaceglobal.com/gis/070825/" }
+            ]
+          },
+          {
+            name: "Other Sub-Saharan Concerns",
+            summary: `<strong>Recent Incidents:</strong><br>
+• South Sudan: sharp increase in kidnappings of aid workers; more than double relative to 2024 with some fatal outcomes<br>
+• DRC: attacks and displacement in North Kivu by armed groups (such as ADF) remain frequent and deadly (e.g., Komanda massacre)<br><br>
+<strong>Emerging Trends:</strong><br>
+• Humanitarian and aid operations are at increased risk, particularly in conflict or post-conflict areas<br>
+• Internal displacement continues to rise, increasing risks for civilians and field staff<br>
+• Transnational dynamics (refugee flows, militant movement) complicate operations and security interventions`,
+            links: [
+              { text: "AP News - South Sudan", url: "https://apnews.com/article/1ca1ee05281c828dc9993b7e6bd9f03f" },
+              { text: "Komanda Massacre", url: "https://en.wikipedia.org/wiki/Komanda_massacre" }
+            ]
+          }
+        ],
+        riskSummary: `Overall Risk Level: High in many affected rural and border areas, especially in the north of Nigeria, the Sahel, and conflict zones in Central and East Africa. Moderate urban risks also exist (crime, kidnappings).`,
+        riskList: [
+          "Kidnapping-for-ransom (both mass and opportunistic)",
+          "Armed banditry / militant attacks, especially in remote and rural areas",
+          "Disruption to logistics and operational access (roads, supply chains)",
+          "Cybersecurity threats, particularly against digital platforms connected to critical infrastructure and trade"
+        ],
+        advisoryAll: [
+          "Maintain high situational awareness",
+          "Avoid travel at night; restrict movement to daylight hours",
+          "Use verified/transparent transport options equipped with GPS and trusted local security contacts",
+          "Share live location details with trusted persons and/or security focal points",
+          "Ensure staff have emergency kits and basic communication/evacuation plans"
+        ],
+        advisorySpecific: [
+          "Route planning: use well-patrolled or main routes; avoid secondary roads with poor security coverage",
+          "Pre-travel briefings: consult latest advisories and local security incident reports",
+          "Coordination: inform local authorities/contacts of travel plans",
+          "Travel in pairs or groups where possible; avoid small groups in remote areas",
+          "For Nigeria: avoid non-essential travel to rural or border areas, particularly in the North-West; prefer highways with patrols",
+          "For Sahel: avoid crossing borders without assurance of safe corridors; limit exposure outside secure zones"
+        ],
+        advisoryOther: [
+          "Cyber hygiene: strong passwords, two-factor authentication, avoid unsecured networks",
+          "Humanitarian staff: ensure IDs and accreditations are up to date; coordinate with agencies (UN/OCHA/INGOs) for secure lodging",
+          "Disaster risk: floods and displacement can reduce security; plan for these eventualities",
+          "Avoid overnight stays in high-risk towns, especially those with recent incidents",
+          "Use reliable accommodation whose security has been verified; ensure contingency plans (evacuation, medical) are in place"
+        ],
+        strategy: [
+          "Strengthen intelligence gathering and regional collaboration (e.g., partnerships with ONSA, ACLED, national security services)",
+          "Develop dashboards to track trends in kidnappings, banditry and militant activity; integrate mapping and predictive indicators",
+          "Increase investment in staff security training (physical security and digital security)",
+          "Review operational footprint in high-risk areas: consider remote work, office relocation, or postponement of non-essential field missions",
+          "Coordinate with allied NGOs and government for safer access routes and enhanced law enforcement presence in logistics corridors"
+        ],
+        updates: [
+          { text: "SBM Intelligence: Between July 2024 and June 2025, 4,722 kidnappings were recorded in Nigeria; ransom demands reached nearly ₦48 billion, though actual payments were about ₦2.57 billion.", link: "https://www.vanguardngr.com/2025/08/insecurity-4722-abductions-n2-57bn-ransom-paid-to-kidnappers-in-one-year-report/" },
+          { text: "ACLED data shows a sharp uptick in JNIM operations in Segou and Kayes in Mali in August 2025 – including blockades of towns and attacks on forces and civilians.", link: "https://acleddata.com/update/africa-overview-august-2025" },
+          { text: "Cyber incidents: a major malware incident affected South Africa's National Treasury; Nigeria Customs clearance platform was reported breached; data thefts occurred in land/infrastructure authorities.", link: "https://www.ogunsecurity.com/post/five-major-cybersecurity-breaches-in-africa-july-august-2025" }
+        ],
+        keyMessages: `The security environment remains unstable across many parts of Sub-Saharan Africa. Kidnapping, banditry, militant activity, and political instability are key threats. For SCIDaR staff, safety depends heavily on planning, using secure transport, limiting exposure, and staying informed. Operational resilience must be supported by data, real-time intelligence, training, and collaboration.`,
+        labels: {
+          riskSectionTitle: "Risk Assessment",
+          primaryRisksTitle: "Primary Risks Identified:",
+          strategyTitle: "Strategic Suggestions for Senior Management",
+          contactsTitle: "Prepared by",
+          preparedBy: "[Your Name], Head of Operations, Infrastructure, Travel, General Administration, Security & Safety",
+          advisoryAllTitle: "For All Regions",
+          advisorySpecificTitle: "Specific Zones (Nigeria / Sahel)",
+          advisoryOtherTitle: "Other Risk Domains",
+          footerNote: "Document compiled from verified security intelligence sources"
+        }
+      },
+
+      fr: {
+        heroTitle: "Bulletin d'information SCIDaR sur la sécurité – Incidents majeurs et tendances",
+        date: "21 septembre 2025",
+        sourceNote: "Contenu provenant de rapports de renseignement de sécurité vérifiés",
+        regions: [
+          {
+            name: "Ouest et Nord-Ouest du Nigeria",
+            summary: `<strong>Incidents récents :</strong><br>
+• Plusieurs enlèvements et attaques armées à grande échelle (par ex. plus de 50 personnes enlevées à Zamfara, attaques sur les autoroutes et dans les villages)<br>
+• Attaque d'Oreke-Okeigbo (État de Kwara) : enlèvement de travailleurs, meurtre de plusieurs policiers<br>
+• Attaque de Kwallajiya (État de Sokoto, LGA de Tangaza) : des dizaines de morts et de blessés dans des exploitations agricoles<br><br>
+<strong>Tendances émergentes :</strong><br>
+• Les enlèvements contre rançon sont devenus plus fréquents et de plus en plus organisés<br>
+• Les groupes de bandits (par ex. Lakurawa) étendent leurs opérations et deviennent plus audacieux en zone rurale<br>
+• Coût économique significatif : paiements de rançon s'élevant à des milliards de nairas ; perturbations de l'agriculture, du commerce et des déplacements<br>
+• Les menaces liées à la cybersécurité augmentent, en particulier dans les centres urbains`,
+            links: [
+              { text: "Africa Center Review", url: "https://africacenter.org/daily-media-review/africa-media-review-for-august-5-2025/" },
+              { text: "Attaque d'Oreke-Okeigbo", url: "https://en.wikipedia.org/wiki/2025_Oreke-Okeigbo_attack" },
+              { text: "Attaque de Kwallajiya", url: "https://en.wikipedia.org/wiki/2025_Kwallajiya_attack" },
+              { text: "Rapport violations cyber", url: "https://www.ogunsecurity.com/post/five-major-cybersecurity-breaches-in-africa-july-august-2025" }
+            ]
+          },
+          {
+            name: "Mali & Région du Sahel",
+            summary: `<strong>Incidents récents :</strong><br>
+• Le JNIM a intensifié ses opérations dans le sud du Mali (Ségou, Kayes), y compris des attaques majeures et des blocus de villes, ainsi que la saisie de biens militaires<br>
+• Enlèvements de ressortissants étrangers au Mali, notamment sur des sites industriels ou d'infrastructure<br><br>
+<strong>Tendances émergentes :</strong><br>
+• Les groupes terroristes ciblent de plus en plus des actifs économiques/industriels<br>
+• Les zones frontalières restent très poreuses ; les groupes exploitent la faiblesse de la gouvernance et les lacunes logistiques<br>
+• Utilisation de méthodes d'attaque complexes : embuscades, blocus et enlèvements plutôt que des attaques-éclair simples`,
+            links: [
+              { text: "ACLED Aperçu Afrique", url: "https://acleddata.com/update/africa-overview-august-2025" },
+              { text: "Solace Global Intel", url: "https://www.solaceglobal.com/gis/070825/" }
+            ]
+          },
+          {
+            name: "Autres préoccupations subsahariennes",
+            summary: `<strong>Incidents récents :</strong><br>
+• Soudan du Sud : forte augmentation des enlèvements de travailleurs humanitaires ; plus du double par rapport à 2024, avec quelques conséquences mortelles<br>
+• RDC : attaques et déplacements au Nord-Kivu par des groupes armés (tels que les ADF) restent fréquents et meurtriers<br><br>
+<strong>Tendances :</strong><br>
+• Les opérations humanitaires sont exposées à un risque accru, surtout en zone de conflit/post-conflit<br>
+• Les déplacements internes continuent d'augmenter, augmentant les risques pour les civils et le personnel sur le terrain<br>
+• Les dynamiques transfrontalières (flux de réfugiés, mouvements militants) compliquent les opérations et les interventions sécuritaires`,
+            links: [
+              { text: "AP News - Soudan du Sud", url: "https://apnews.com/article/1ca1ee05281c828dc9993b7e6bd9f03f" },
+              { text: "Massacre de Komanda", url: "https://en.wikipedia.org/wiki/Komanda_massacre" }
+            ]
+          }
+        ],
+        riskSummary: `Niveau de risque global : élevé dans de nombreuses zones rurales et frontalières touchées, en particulier dans le nord du Nigeria, le Sahel et les zones de conflit en Afrique centrale et orientale. Des risques urbains modérés sont également présents (criminalité, enlèvements).`,
+        riskList: [
+          "Enlèvements contre rançon (massifs et opportunistes)",
+          "Banditisme armé / attaques militantes, en particulier en zones reculées et rurales",
+          "Perturbation de la logistique et de l'accès opérationnel (routes, chaînes d'approvisionnement)",
+          "Menaces liées à la cybersécurité, surtout pour les plateformes numériques liées aux infrastructures critiques et au commerce"
+        ],
+        advisoryAll: [
+          "Restez très attentif à la situation",
+          "Évitez de voyager la nuit ; limitez vos déplacements aux heures diurnes",
+          "Utilisez des moyens de transport vérifiés et transparents équipés de GPS et des contacts locaux fiables en matière de sécurité",
+          "Partagez votre position en temps réel avec des personnes de confiance et/ou des points de contact chargés de la sécurité",
+          "Assurez-vous que tout le personnel dispose d'une trousse d'urgence et de plans de communication/évacuation de base"
+        ],
+        advisorySpecific: [
+          "Planification de l'itinéraire : empruntez des routes bien surveillées ou principales ; évitez les routes secondaires peu sûres",
+          "Briefings pré-départ : consultez les derniers avis et rapports sur les incidents de sécurité locaux",
+          "Coordination : informez les autorités locales/contacts de vos projets de voyage",
+          "Voyagez à deux ou en groupe si possible ; évitez les petits groupes dans les zones reculées",
+          "Pour le Nigeria : évitez tout déplacement non essentiel dans les zones rurales du nord-ouest ; privilégiez les autoroutes patrouillées",
+          "Région du Sahel : évitez de traverser les frontières sans garantie de couloirs sûrs ; limitez votre exposition hors des zones sécurisées"
+        ],
+        advisoryOther: [
+          "Cybersécurité : mots de passe forts, authentification à deux facteurs, éviter les réseaux non sécurisés",
+          "Personnel humanitaire : s'assurer que les pièces d'identité et les accréditations sont à jour ; coordonner avec les agences (ONU/OCHA/ONG) pour un hébergement sûr",
+          "Risques de catastrophe : les inondations et les zones de déplacement peuvent réduire la sécurité ; planifier en conséquence",
+          "Évitez de passer la nuit dans des villes à haut risque, en particulier celles qui ont récemment connu des incidents",
+          "Utilisez des hébergements fiables dont la sécurité a été vérifiée ; assurez-vous que des plans d'urgence sont en place (évacuation, soins médicaux)"
+        ],
+        strategy: [
+          "Renforcer la collecte de renseignements et la collaboration régionale (par ex. partenariats avec l'ONSA, l'ACLED, les services de sécurité nationaux)",
+          "Développer l'utilisation de tableaux de bord pour recenser les tendances en matière d'enlèvements, de banditisme et d'activités militantes ; intégrer la cartographie et les indicateurs prédictifs",
+          "Augmenter les investissements dans la formation du personnel en matière de sécurité (physique et numérique)",
+          "Réviser l'empreinte opérationnelle dans les zones à haut risque : envisager le télétravail, la délocalisation des bureaux ou le report des missions sur le terrain non essentielles",
+          "Plaider ou collaborer avec les ONG alliées et le gouvernement pour des voies d'accès plus sûres et une présence renforcée des forces de l'ordre dans les couloirs logistiques"
+        ],
+        updates: [
+          { text: "SBM Intelligence : entre juillet 2024 et juin 2025, 4 722 enlèvements ont été enregistrés au Nigeria ; les demandes de rançon ont atteint près de ₦48 milliards, mais les paiements effectifs se sont élevés à environ ₦2,57 milliards.", link: "https://www.vanguardngr.com/2025/08/insecurity-4722-abductions-n2-57bn-ransom-paid-to-kidnappers-in-one-year-report/" },
+          { text: "Les données de l'ACLED montrent une forte augmentation des opérations du JNIM dans les régions de Ségou et Kayes au Mali en août 2025, notamment des villes bloquées et des attaques contre les forces de sécurité et les civils.", link: "https://acleddata.com/update/africa-overview-august-2025" },
+          { text: "Les cyberattaques sont en hausse : par exemple, incident majeur lié à un logiciel malveillant ayant touché des institutions (ex : Trésor), piratage de plateformes douanières et vols de données.", link: "https://www.ogunsecurity.com/post/five-major-cybersecurity-breaches-in-africa-july-august-2025" }
+        ],
+        keyMessages: `La situation sécuritaire reste instable dans de nombreuses régions d'Afrique subsaharienne. Les enlèvements, le banditisme, les activités militantes et l'instabilité politique constituent les principales menaces. Pour le personnel du SCIDaR, la sécurité dépend fortement de la planification, de l'utilisation de moyens de transport sûrs, de la limitation de l'exposition et du maintien de l'information. La résilience opérationnelle doit être soutenue par des données, des renseignements en temps réel, des formations et la collaboration.`,
+        labels: {
+          riskSectionTitle: "Évaluation des risques",
+          primaryRisksTitle: "Principaux risques identifiés :",
+          strategyTitle: "Suggestions stratégiques pour la haute direction",
+          contactsTitle: "Préparé par",
+          preparedBy: "[Votre nom], responsable des opérations, des infrastructures, des déplacements, de l'administration générale, de la sécurité et de la sûreté",
+          advisoryAllTitle: "Pour toutes les régions",
+          advisorySpecificTitle: "Zones spécifiques (Nigeria / Sahel)",
+          advisoryOtherTitle: "Autres domaines à risque",
+          footerNote: "Document compilé à partir de sources de renseignement de sécurité vérifiées"
+        }
+      }
+    };
+
+    const btnEn = document.getElementById('btn-en');
+    const btnFr = document.getElementById('btn-fr');
+    const langFab = document.getElementById('lang-fab');
+    const topFab = document.getElementById('top-fab');
+
+    let lang = 'en';
+
+    function setLangButtons(){
+      btnEn.classList.toggle('active', lang === 'en');
+      btnFr.classList.toggle('active', lang === 'fr');
+      btnEn.setAttribute('aria-selected', lang === 'en');
+      btnFr.setAttribute('aria-selected', lang === 'fr');
+      langFab.textContent = (lang === 'en') ? 'EN' : 'FR';
+    }
+
+    function render(){
+      const data = CONTENT[lang];
+      document.documentElement.lang = (lang === 'en') ? 'en' : 'fr';
+      document.getElementById('hero-title').textContent = data.heroTitle;
+      document.getElementById('hero-meta').textContent = (lang === 'en' ? 'Date: ' : 'Date : ') + data.date;
+      document.getElementById('source-note').textContent = data.sourceNote;
+      document.getElementById('risk-chip').textContent = (lang === 'en' ? 'Risk level: High' : 'Niveau de risque : Élevé');
+      document.getElementById('advice-chip').textContent = (lang === 'en' ? 'Advisory: Avoid non-essential travel' : 'Conseil : évitez les déplacements non essentiels');
+
+      const regionsEl = document.getElementById('regions');
+      regionsEl.innerHTML = '';
+      data.regions.forEach(r=>{
+        const d = document.createElement('div');
+        d.className = 'region';
+        const linksHtml = r.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener noreferrer">${link.text}</a>`).join(' • ');
+        d.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="3" fill="rgba(14,118,168,0.08)"/>
+            <path d="M6 18c1.333-2 3-4 6-4s4.667 2 6 4" stroke="rgba(14,118,168,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="10" r="2" fill="rgba(14,118,168,0.4)"/>
+          </svg>
+          <div>
+            <h4>${r.name}</h4>
+            <small>${r.summary}</small>
+            <div style="margin-top:12px;font-size:12px;opacity:0.9">${linksHtml}</div>
+          </div>
+        `;
+        regionsEl.appendChild(d);
+      });
+
+      document.getElementById('risk-summary').textContent = data.riskSummary;
+      const riskList = document.getElementById('risk-list');
+      riskList.innerHTML = '';
+      data.riskList.forEach(item=>{
+        const li = document.createElement('li'); li.textContent = item; riskList.appendChild(li);
+      });
+
+      const advAll = document.getElementById('advisory-list'); advAll.innerHTML = '';
+      data.advisoryAll.forEach(a=>{ const li=document.createElement('li'); li.textContent=a; advAll.appendChild(li);});
+
+      const advSpec = document.getElementById('advisory-specific'); advSpec.innerHTML='';
+      data.advisorySpecific.forEach(a=>{ const li=document.createElement('li'); li.textContent=a; advSpec.appendChild(li);});
+
+      const advOther = document.getElementById('advisory-other'); advOther.innerHTML='';
+      data.advisoryOther.forEach(a=>{ const li=document.createElement('li'); li.textContent=a; advOther.appendChild(li);});
+
+      const upd = document.getElementById('updates-list'); upd.innerHTML='';
+      data.updates.forEach(u=>{ 
+        const li=document.createElement('li'); 
+        li.innerHTML = `${u.text} <a href="${u.link}" target="_blank" rel="noopener noreferrer">[${lang === 'en' ? 'Source' : 'Source'}]</a>`;
+        upd.appendChild(li); 
+      });
+
+      const strategy = document.getElementById('strategy-list'); strategy.innerHTML='';
+      data.strategy.forEach(s=>{
+        const div = document.createElement('div'); div.className='mini';
+        div.textContent = s;
+        strategy.appendChild(div);
+      });
+
+      document.getElementById('keymsg-text').textContent = data.keyMessages;
+
+      document.getElementById('site-sub').textContent = (lang==='en') ? 'Regional update • Major incidents & trends' : 'Mise à jour régionale • Incidents majeurs et tendances';
+      
+      document.getElementById('risk-section-title').textContent = data.labels.riskSectionTitle;
+      document.getElementById('primary-risks-title').textContent = data.labels.primaryRisksTitle;
+      document.getElementById('strategy-title').textContent = data.labels.strategyTitle;
+      document.getElementById('contacts-title').textContent = data.labels.contactsTitle;
+      document.getElementById('prepared-by').textContent = data.labels.preparedBy;
+      document.getElementById('advisory-all-title').textContent = data.labels.advisoryAllTitle;
+      document.getElementById('advisory-specific-title').textContent = data.labels.advisorySpecificTitle;
+      document.getElementById('advisory-other-title').textContent = data.labels.advisoryOtherTitle;
+      document.getElementById('footer-note').textContent = data.labels.footerNote;
+      
+      document.getElementById('incidents-title').textContent = lang === 'en' ? 'Incident Summary: Key Regions & Trends (May–Sept 2025)' : 'Résumé des incidents : régions clés et tendances (mai-septembre 2025)';
+      document.getElementById('advice-title').textContent = lang === 'en' ? 'Advisory & Travel Guidance' : 'Conseils et recommandations aux voyageurs';
+      document.getElementById('updates-title').textContent = lang === 'en' ? 'Latest Verified Updates (post-5 Sep 2025)' : 'Dernières mises à jour vérifiées (après le 5 septembre 2025)';
+      document.getElementById('complete-title').textContent = lang === 'en' ? 'Summary & Key Messages' : 'Résumé et messages clés';
+
+      setLangButtons();
+      initReveal();
+    }
+
+    btnEn.addEventListener('click', ()=>{ lang='en'; render(); });
+    btnFr.addEventListener('click', ()=>{ lang='fr'; render(); });
+    langFab.addEventListener('click', ()=>{ lang=(lang==='en')?'fr':'en'; render(); });
+
+    topFab.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    function initReveal(){
+      const reveals = document.querySelectorAll('.reveal');
+      reveals.forEach((el, idx) => {
+        el.classList.remove('in');
+        el.style.transitionDelay = `${idx * 0.1}s`;
+      });
+      
+      const io = new IntersectionObserver((entries, obs)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){ 
+            entry.target.classList.add('in'); 
+            obs.unobserve(entry.target); 
+          }
+        });
+      }, {threshold: 0.1});
+      reveals.forEach(r=> io.observe(r));
+    }
+
+    window.addEventListener('keydown', (e)=>{ 
+      if(e.key.toLowerCase()==='l'){ 
+        lang=(lang==='en')?'fr':'en'; 
+        render(); 
+      } 
+    });
+
+    render();
+  </script>
+</body>
+</html>
