@@ -175,7 +175,7 @@ def fetch_security_news(api_key: str):
     to_date = datetime.now(tz=timezone.utc)
 
     rss_links=[
-                'https://news.google.com/rss/search?q=nigeria+security&hl=en-NG&gl=NG&ceid=NG:en',
+                #'https://news.google.com/rss/search?q=nigeria+security&hl=en-NG&gl=NG&ceid=NG:en',
                 'https://dailytrust.com/feed/',  # Daily Trust
                 'https://www.channelstv.com/feed/',  # Channels TV
                 'https://www.premiumtimesng.com/feed/'  # Premium Times
@@ -209,10 +209,7 @@ def fetch_security_news(api_key: str):
     """
 
     prompts = [
-    PROMPT_STRING.replace("Nigeria", "Northern Nigeria (e.g., banditry in Zamfara, Kaduna)"),
-    PROMPT_STRING.replace("Nigeria", "Southern Nigeria (e.g., militancy in Delta, cultism in Rivers)"),
-    PROMPT_STRING.replace("Nigeria", "Eastern Nigeria (e.g., IPOB sit at home)"),
-    PROMPT_STRING.replace("Nigeria", "Western Nigeria (e.g., Burnt down shops in Tradefair, Lagos)")
+    PROMPT_STRING.replace("Nigeria", "Northern Nigeria (e.g., banditry in Zamfara, Kaduna), Southern Nigeria (e.g., militancy in Delta, cultism in Rivers), Eastern Nigeria (e.g., IPOB sit at home), Western Nigeria (e.g., Burnt down shops in Tradefair, Lagos)")
     ]
 
     all_news = []
